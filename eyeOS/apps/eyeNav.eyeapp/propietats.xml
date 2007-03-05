@@ -1,0 +1,10 @@
+<?xml version="1.0"?>
+<eyeOSapp>
+  <title>eyeNav</title>
+  <category>Internet</category>
+  <helpfile>index</helpfile>
+  <window height='540' width='900' />
+  <param>
+    <startpage>http://www.eyeos.org/startpage</startpage>
+  </param>
+</eyeOSapp>

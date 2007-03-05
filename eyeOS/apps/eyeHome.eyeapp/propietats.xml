@@ -1,0 +1,9 @@
+<?xml version="1.0"?>
+<eyeOSapp>
+  <title>eyeHome</title>
+  <category>File Management</category>
+  <helpfile>index</helpfile>
+  <window height='400' width='600' />
+</eyeOSapp>
+
+

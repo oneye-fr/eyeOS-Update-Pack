@@ -1,0 +1,14 @@
+<?xml version="1.0"?>
+<eyeViewer>
+  <app>apps/eyeFrame.eyeapp</app>
+  <author> Pau Garcia-Mila</author>
+  <title>eyeViewer</title>
+  <window height='400' width='500'>
+     <minimize>no</minimize>
+  </window>
+  <param>
+    <width>96%</width>
+    <height>83%</height>
+    <type>viewer</type>
+  </param>
+</eyeViewer>

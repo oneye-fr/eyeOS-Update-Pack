@@ -1,0 +1,38 @@
+/* Up Border */
+.bsupcen {
+	width: expression(this.parentNode.offsetWidth-5-5);
+}
+
+
+/* Down Border */
+.binfcen {
+	width: expression(this.parentNode.offsetWidth-18-18);
+}
+
+/* Window content */
+.txt {
+	width: expression(this.parentNode.offsetWidth);
+	height: expression(this.parentNode.offsetHeight-22-18);
+
+}
+
+/* Trash icon */
+.icnbrossa{
+	position: absolute;
+	z-index: 3;
+	width: 28px;
+	height: 28px;
+	right: 59px;
+	bottom: 2px;
+}
+/* Panel for small icons */
+.panel {
+	position: absolute;
+	z-index: 2;
+	width: 100px;
+	height: 37px;
+	right:0px;
+	bottom: 0px;
+	background-image:url(panel.png); 
+	background-position: bottom; 
+}

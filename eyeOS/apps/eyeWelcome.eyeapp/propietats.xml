@@ -1,0 +1,9 @@
+<?xml version="1.0"?>
+<eyeOSapp>
+  <title>eyeOS Welcome Screen</title>
+  <helpfile>index</helpfile>
+  <window height="475" width="610">
+    <x_pos>190</x_pos>
+    <y_pos>70</y_pos>
+  </window>
+</eyeOSapp>

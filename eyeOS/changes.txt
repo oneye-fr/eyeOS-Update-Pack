@@ -1,0 +1,561 @@
+
+                          eyeOS 0.9.x series change log
+                          -----------------------------
+
+----------------------------------------------------------------------------
+
+0.9.3-5b  -----> released as eyeOS 0.9.3-5
+
+----------------------------------------------------------------------------
+
+0.9.3-5a to 0.9.3-5b
+--------------------
+
+-File system/baixar.php
+   -Added support view files (images,txt,html) instead of force download.
+
+-File system/funcions.php
+   -Added support for left border in window themes.
+   -Function showAppIcon: Showing eyeTrash instead of eyeHome.eyeapp(trash).
+
+-File apps/eyeApps.eyeapp/aplic.php
+   -Removed search of ico_a.png (deprecated in 0.9.0) when installing an
+     external app.
+----------------------------------------------------------------------------
+
+0.9.3-5 to 0.9.3-5a
+--------------------
+
+-File apps/eyeHome.eyeapp/aplic.php
+   -Upload/manage files system rewritten (using unique ID for each 
+     file instead of its real name for security reasons now)
+   -Using eyeHome.eyeapp(trash) as Trash manager.
+
+-File apps/eyeHome.eyeapp/listfiles.php
+   -Adapted file listing to not show .eyeFile files 
+     (XML containing info about each file).
+
+-Removed apps/eyeTrash.eyeapp/aplic.php, propietats.xml & lang.php.
+
+-File apps/eyeFrame.eyeapp/aplic.php
+   -Added support for the new system of naming files
+     when loading an image/text in eyeViewer.
+
+----------------------------------------------------------------------------
+
+0.9.3-4a  -----> released as eyeOS 0.9.3-4
+
+----------------------------------------------------------------------------
+
+0.9.3-3 to 0.9.3-4a
+--------------------
+
+-File system/funcions.php
+   -Added support for function str_ireplace() for PHP versions < 5.0.0.
+
+-File apps/eyeMessages.eyeapp/aplic.php
+   -Added "Re: $TITLE" when replying a message.
+
+----------------------------------------------------------------------------
+
+0.9.3-3a  -----> released as eyeOS 0.9.3-3
+
+----------------------------------------------------------------------------
+
+0.9.3-2 to 0.9.3-3a
+--------------------
+
+-File apps/eyeHome.eyeapp/aplic.php
+   -Improved security in uploading files process.
+
+-File system/scripts/x_eyeOSwin.js
+   -Solved maximize bug under IE (Reported/Solved by lophas).
+
+-File apps/eyeTrash.eyeapp/aplic.php
+   -Solved bug when deleting a single file.
+
+-File login/browlang.php
+   -Rewritten the language check using switch();
+----------------------------------------------------------------------------
+
+0.9.3-2a  -----> released as eyeOS 0.9.3-2
+
+----------------------------------------------------------------------------
+
+0.9.3-1 to 0.9.3-2a
+--------------------
+
+-File apps/eyeEdit.eyeapp/aplic.php:
+  -Reopened file when saved
+
+-File apps/eyeNav.eyeapp/propietats.xml
+  -Changed Start page to http://eyeos.org/startpage
+
+----------------------------------------------------------------------------
+
+0.9.3-1a  -----> released as eyeOS 0.9.3-1
+
+----------------------------------------------------------------------------
+
+0.9.3 to 0.9.3-1a
+--------------------
+
+-Updated default theme icons and trash bar
+-Updated eyeCalendar style css file (apps/eyeCalendar/calendar.css)
+
+----------------------------------------------------------------------------
+
+0.9.3-0a  -----> released as eyeOS 0.9.3
+
+----------------------------------------------------------------------------
+
+0.9.2-2 to 0.9.3-0a
+--------------------
+
+-Updated default theme and default graphics.
+-Updated eyeInfo Screen.
+-eyeEdit.eyeapp : Updated to tinyMCE 2.0.8.
+-Redesigned Bubbles in eyeHome, eyeEdit.
+-Added different checks for Internet Explorer (general) and Internet Explorer 6.
+-Rewrote specific Internet Explorer css file.
+-Solved system/baixar.php bug when using different browsers.
+-Solved problems in textareas under IE in eyeMessages, eyePhones and eyeEdit.
+-Updated Welcome Screen with the new windows style.
+
+----------------------------------------------------------------------------
+
+0.9.2-2b  -----> released as eyeOS 0.9.2-2
+
+----------------------------------------------------------------------------
+
+0.9.2-2a to 0.9.2-2b
+--------------------
+
+-File system/funcions.php
+  -Cleaned xmlEntities() function -not used anywhere-
+  -Cleaned $XMLreplace - not necessary with the new check, since returned HTML code to possibile malicious javascript.
+
+----------------------------------------------------------------------------
+
+0.9.2-1 to 0.9.2-2a
+--------------------
+
+-Changed global check functions for htmlspecialchars().
+-Removed userinput function from funcions.php and all it's calls from apps.
+-Allowed (phpinfo) eyeInfo only if Debug mode is activated.
+
+----------------------------------------------------------------------------
+
+0.9.2-1a  -----> released as eyeOS 0.9.2-1
+
+----------------------------------------------------------------------------
+
+0.9.2 to 0.9.2-1a
+--------------------
+
+-Added more protection in uploaded files (eyeHome, eyeOptions and eyeMobile) - Jose Carlos Norte.
+
+----------------------------------------------------------------------------
+
+0.9.2-0a  -----> released as eyeOS 0.9.2
+
+----------------------------------------------------------------------------
+
+0.9.1-5 to 0.9.2-0a
+--------------------
+
+-Added the new eyeOS Mobile desktop: New m.php file and 2 patches in index.php to redirect to m.php if found the $_REQUEST.
+
+----------------------------------------------------------------------------
+
+0.9.1-5b  -----> released as eyeOS 0.9.1-5
+
+----------------------------------------------------------------------------
+
+0.9.1-5a to 0.9.1-5b
+--------------------
+
+-Added eyeWelcome.eyeapp:
+   -Files index.php, apps/eyeOptions.eyeapp/aplic.php, system/install.php: Added eyeWelcome.eyeapp in <run_once> for new users.
+
+----------------------------------------------------------------------------
+
+0.9.1-4 to 0.9.1-5a
+--------------------
+
+Files apps/eyeApps.eyeapp/aplic.php
+  -Line 157: Added translation function to msg() for allowing translations and making "%0" not appear in the message but the name of the app.
+
+File apps/eyeEdit.eyeapp/aplic.php
+  -Lines 65,68: Removed the name of the file (generated by time()) im the message.
+
+File system/funcions.php
+  -Added cleanvar function to clean vars from possible XSS attacks
+
+File sysdefs.php
+  -Using cleanvar function to clean all $_REQUESTs (the ancient process was not recursive in arrays).
+
+Files system/archive.php, system/stats.php, system/syscall.php, system/funcions.php, login/index.php, login/browlang.php
+   -Added protection for not allowing the files from  being executed from outside the system.
+
+----------------------------------------------------------------------------
+
+0.9.1-4b  -----> released as eyeOS 0.9.1-4
+
+----------------------------------------------------------------------------
+
+0.9.1-4a to 0.9.1-4b
+--------------------
+
+File apps/eyeEdit.eyeapp/aplic.php
+  -Added remove protection in public notes: Can be removed only by the user who created the document and ROOTUSR.
+
+File apps/eyeHome.eyeapp/aplic.php
+  -Added protection to avoid existent files in Publicdir to being overwritten.
+  -Added remove protection in public files: Can be removed only by the user who moved to public the file and ROOTUSR.
+
+0.9.1-3 to 0.9.1-4a
+--------------------
+
+Files apps/eyeCalendar.eyeapp/ipc.php
+  -Added basename and strip_tags to $dmy. (bug found by Jose Carlos Norte)
+
+File system/lang.php
+  -Updated string in catalan that had a ' and broke some javascript alerts.
+
+----------------------------------------------------------------------------
+
+0.9.1-3b  -----> released as eyeOS 0.9.1-3
+
+----------------------------------------------------------------------------
+
+0.9.1-3a to 0.9.1-3b
+--------------------
+Files apps/eyeHome.eyeapp/aplic.php and apps/eyeTrash.eyeapp/aplic.php
+  -Changed "kb" for "KB" (bug found by Lars Knickrehm)
+  -Changed "HOME" for "My Home" in eyeHome.eyeapp (bug found by Lars Knickrehm)
+
+File system/css/insall.css
+  -Centered the text of .titoltaronja class (for the Installation script title) (bug found by Lars Knickrehm)
+
+File apps/eyeNav.eyeapp/aplic.php
+  -Changed from 10pt to 8pt the text, and cut titles for public bookmarks to 9 characters (not for alt='' and title='')
+
+----------------------------------------------------------------------------
+
+0.9.1-2 to 0.9.1-3a
+--------------------
+File apps/eyeOptions.eyeapp/aplic.php
+  -Lines 98 and 94: Solved user transition bug (was creating directories inside Root's directory and not the new user directory.
+
+File apps/eyeApps.eyeapp/aplic.php
+  -Added the buttons "Move to the right" and "Move to the left" for each icon in the bar.
+
+----------------------------------------------------------------------------
+
+0.9.1-2a  -----> released as eyeOS 0.9.1-2
+
+----------------------------------------------------------------------------
+
+0.9.1-1 to 0.9.1-2a
+--------------------
+File sysdefs.php
+  -Lines 31-34: Moved to 20-23, solving check avoiding when magic_quotes.
+  -Changed the method of cleaning REQUESTS: Removing only the problematic part, no the full REQUEST.
+
+File apps/eyeCalendar.eyeapp/calendar.js
+  -Disabled alert() by default.
+
+----------------------------------------------------------------------------
+
+0.9.1-1b  -----> released as eyeOS 0.9.1-1
+
+----------------------------------------------------------------------------
+
+0.9.1-1a to 0.9.1-1b
+--------------------
+File apps/eyeCalendar.eyeapp/calendar.js
+  -Lines 216-217: Moved to 201-202, solving problem when going from January to December (went to December of year-2)
+
+----------------------------------------------------------------------------
+
+0.9.1 to 0.9.1-1a 
+--------------------
+File apps/eyeHome.eyeapp/aplic.php
+  -Lines 212: Added "overflow:auto" to don't allowing text go outside the box.
+  -Line 168: Changed div to "position:absolute" to show tabs in IE.
+
+Files apps/eyeHelp.app, apps/eyeViewer.app
+   -Changed height to 83% (scrollbar appeared in IE with 84%)
+
+File apps/eyeEdit.eyeapp/aplic.php
+   -Fixed XSS in remove bar
+
+File apps/eyeOptions.eyeapp/aplic.php
+   -Fixed XSS in change theme var
+
+----------------------------------------------------------------------------
+
+
+0.9.0-6b to 0.9.1
+-------------------
+-Added User Transition from usr/user to etc/users/ur4 where "4" is the last digit of the strlen of the username.
+-Changed urlencode to rawurlencode in eyeHome, eyeTrash and system/baixar.php.
+-Added Public files support in eyeHome.
+-Solved XSS bug in eyeNav.
+-Solved XSS bug in system/baixar.php.
+-Updated default theme to BlueIris (ancient one is also available and is called GreenIris).
+-Updated default login screen graphics.
+
+0.9.0-6a to 0.9.0-6b 
+--------------------
+File README
+  -Added this file, which describes installation and basic usage of eyeOS.
+
+File apps/eyeHome.eyeapp/aplic.php
+  -Removed line 49 -not converting names when uploading a file).
+
+File apps/eyeHome.eyeapp/listfiles.php
+  -Line 47: Separated names of file: $f shows the name, $fenc encodes it for passing via GET.
+  -Line 63: Added download button to all files.
+
+File system/gfx/btn/download.png
+  -Restyled button for looking like delete button in eyeHome.
+
+File system/baixar.php
+  -Lines 23-26: Fixed bug that didn't allow to download a file when was not on the root directory.
+
+Solved bug 0003: Notice: Undefined index: autorun 
+  In apps/eyeApps.eyeapp/aplic.php on line 94 after apps config updated  
+
+----------------------------------------------------------------------------
+
+0.9.0-5 to 0.9.0-6a 
+--------------------
+Folder apps/eyeEdit.eyeapp/tiny_mce
+  -Updated tiny_mce to 2.0.6.1. No changes outside /tiny_mce/.
+
+Files login/index.php and login/browlang.php
+  -Added Italian language to the login screen.
+
+----------------------------------------------------------------------------
+
+0.9.0-5a  -----> released as eyeOS 0.9.0-5
+
+----------------------------------------------------------------------------
+
+0.9.0-4 to 0.9.0-5a 
+--------------------
+File apps/eyeEdit.eyeapp/aplic.php
+  -Lines 41,46: Added a check for "</textarea", for avoiding break of the textarea
+   when user is not using the WYSIWYG editor.
+
+File apps/eyeApps.eyeapp/aplic.php
+   -Line 146: Moved here the JavaScript code that creates the removeApp warning
+    (was created inside a bucle and printed once by app).
+   -Line 152: Added check for the error message. Only show the div if $errmsg is not empty
+
+File apps/eyeInfo.eyeapp/aplic.php
+   -Text -> 80%.
+
+File index.php
+   -Line 107: Added eyeRSS to the default icon list to be created when a new user is registered
+
+Folder login/
+    -Added language support.
+    -Added new user box if strtolower(CREATE_ACCOUNTS) == "yes".
+
+-Renamed "validate.txt" to "NOTvalidate.txt" in login/ for allowing by default account registrations
+
+----------------------------------------------------------------------------
+
+0.9.0-4b  -----> released as eyeOS 0.9.0-4
+
+----------------------------------------------------------------------------
+0.9.0-4a to 0.9.0-4b 
+--------------------
+File apps/eyeRSS.eayapp/eyeRSS.js
+
+line 15 :         ele = getElementsByClass (ele, 'rssShow');
+       =>          ele = getElementsByClass (app, 'rssShow');
+
+
+line 19 :         ele = getElementsByClass (ele, 'RSSFeedId', 'div')[0];
+         =>        ele = getElementsByClass (app, 'RSSFeedId', 'div')[0];
+
+0.9.0-3 to 0.9.0-4a 
+--------------------
+File login/index.php
+  -Line 17: Added the number of users if system/infousers.txt or infousers.txt exists
+  -Lines 41, 84: Added link to eyeOS.org in the text "visite eyeOS main Website", 
+   and in "running eyeOS vX.Y.Z-%"
+
+Files index.php, desktop.php, system/install.php, login/index.php
+  -Added the new shortcut icon for browsers (with transparency).
+
+File apps/eyeBoard.eyeapp/aplic.php
+  -Line 28: Changed the name of the archive file from "Archive-eyeBoard.eyeapp.html" to
+   "Archive-eyeBoard.html" because caused overflow in eyeHome
+
+File apps/eyeInfo.eyeapp/aplic.php
+  -Lines 13-17: 
+    -Added the "Support eyeOS" button, which links to the Donate page inside eyeNav.
+    -Moved the "eyeos.org" link to the logo image, which still shows the version number 
+      in alt and title properties.
+----------------------------------------------------------------------------
+
+0.9.0-3d  -----> released as eyeOS 0.9.0-3
+
+----------------------------------------------------------------------------
+0.9.0-3c to 0.9.0-3d 
+--------------------
+
+File apps/eyeCalendar.eyeapp/calendar.js. Line 284:
+
+Added:
+  while (cal && (!cal.className || !cal.className.match (/(^|\s+)eyeapp(\s+|$)/i)))
+    cal = cal.parentNode;
+
+Removed animus theme from default eyeOS
+
+
+----------------------------------------------------------------------------
+
+0.9.0-3b to 0.9.0-3c 
+--------------------
+
+No code changes
+
+Removed apps/eyeEdit.eyeapp/propietats.xml~1~
+Removed system/scripts/#x_eyeOSwin.js#
+Moved CHANGES to changes.txt
+
+----------------------------------------------------------------------------
+
+0.9.0-3a to 0.9.0-3b 
+--------------------
+
+No code changes
+
+File CHANGES
+Reorganized file, removed bug list into separate file and added fixes omitted
+in -2 to -3a changes
+
+File known-bugs.txt
+  New fie listing known bugs in this release, remove them as they are fixed so
+  this list shows only actual system bugs.
+
+----------------------------------------------------------------------------
+
+0.9.0-2 to 0.9.0-3a 
+-------------------
+Changed htmlentites to htmlspecialchars in funcions.php -> userinput() 
+for avoiding language-specific characters to be converted.
+
+Solved "Reply" button in eyeMessages when SHOW_USER_LISTS = no 
+(showing user name in text box now)
+
+Corrected width and height for .icnbrossa (Trash Icon layer) in Default and 
+BlueIris themes
+
+Renamed changes.txt to CHANGES
+
+Fix for config apps appearing on other apps windows when multiple apps with 
+config buttons open:
+In system/scripts/x-eyeOSwin.js remove lines : 220,221
+
+  else
+    !node || (node = document);
+
+With fix above, eyeCalendar stopped working ! Fix :
+In apps/eyeCalendar.eyeapp/calendar.js line 307 
+From :
+  ele = getElementsByClass (ele, 'Cal_today');
+
+To :
+  ele = getElementsByClass (cal, 'Cal_today');
+
+----------------------------------------------------------------------------
+
+X0.9.0-2b to X0.9.0-2e  -----> released as eyeOS 0.9.0-2
+----------------------
+
+Added new function in funcions.php: userinput(), which corrects possible issues
+in user-input text in some apps.
+
+----------------------------------------------------------------------------
+
+X0.9.0-2a to X0.9.0-2b
+----------------------
+
+system/scripts/x_eyeOSwin.js
+  Changed function closeAll (used in system session close) to following :
+
+  function closeAll () {
+    sysCall ('sys', 'wclose', '*', null, null, false);
+    window.location = "index.php";
+  }
+
+  This makes the syscall synchronous and we wait for the server before asking 
+  for the login screen. This solves the session close not working issue
+
+
+system/scripts/x_eyeOSwin.js
+on eyeOS.info and eyeOSdemo [but not on my local system] running IE cannot 
+  close apps or exit session ("Object error"), window move gives same error 
+  (and a more useful "Cannot create moverequest" message) 
+
+  The issue is creating the HTTPrequest object, the "object Error" is an alert 
+  when an MS HTTPreq object is not created
+
+  Rewrote the newRequest function. The new function will alert IE users to the 
+  fact that their configuration does not allow HTTPrequest creation and 
+  indicates how to correct that  
+  
+index.php
+  line 244 changed heaader from
+  
+    header('Location: desktop.php');
+ to
+    header('Location: desktop.php' . (@$a ? '?a='.urlencode($a) : ''));
+
+   This passes to desktop the apps to autorun.
+ 
+ 
+eyemessages.eyeapp/applic.php
+  (check) was not working
+  
+  line 26 changed from 
+    if ($autorun = (is_file ($msrc) && (filemtime ($msrc) > $appinfo['state.lastread'])))
+  to
+    if ((substr($mf, 0,1) != '.') && $autorun = (is_file ("$msrc$mf") && (filemtime ("$msrc$mf") > $appinfo['state.lastread'])))
+
+----------------------------------------------------------------------------
+
+0.9.0-1 to X0.9.0-2a 
+--------------------
+
+apps/eyeNav.eyeapp/aplic.php: 
+   SOLVED BROKEN IMAGE
+
+
+apps/eyeEdit.eyeapp/aplic.php: 
+   SOLVED OVERFLOW HEIGHT TOO BIG
+
+
+system/funcions.php:(showAppIcon function)
+   CHANGED WIDTH FOR IE TO NEW WIDTH OF ICONS
+
+
+system/funcions.php:(AppIcon function):
+  
+   showAppIcon ($imgsrc = $appicons[(isset ($_SESSION['apps'][$app]) && !empty($appicons[1])) ?  1 : 0], $app);
+ to
+   showAppIcon ($imgsrc = $appicons[(isset ($_SESSION['apps'][basename($app)]) && !empty($appicons[1])) ?  1 : 0], $app);
+
+   Reason: App was coming from $_SESSION['usrinfo']['apps'] - app list- and contained the URL to the app 
+   (for example, apps/eyeEdit.eyeapp). For correctly showing the ico_b.png (with the error was showed always
+   ico_c.png) we need the basename of the app (just the name of it), that is what SESSION(apps) contain.
+
+
+Added BlueIris as default theme (size > 1MB... :( )

@@ -1,0 +1,11 @@
+<?xml version="1.0"?>
+<eyeCalc>
+  <title>eyeCalc</title>
+  <category>Office</category>
+  <window height='390' width='230'>
+     <fullscreen>no</fullscreen>
+  </window>
+  <state>  
+    <dp>,</dp>
+  </state>
+</eyeCalc>

@@ -1,0 +1,146 @@
+.wallp {
+	position: absolute;
+	left: 4px;
+	top: 3px;
+	width: 99%;
+	height: 99%;
+	overflow: hidden;
+	z-index: 10;
+	background-repeat: no-repeat;
+}
+.screen {
+	position: absolute;
+	left: 4px;
+	top: 3px;
+	width: 99%;
+	height: 99%;
+	overflow: hidden;
+	z-index: 15;
+	background-repeat: no-repeat;
+}
+.movearrows {
+	position: absolute;
+	bottom: 2px;
+	left: 10px;
+	z-index: 20;
+}
+.titlesc {
+	position: absolute;
+	top: 10px;
+	left: 20px;
+	font-weight: bold;
+	z-index: 20;
+	color: white;
+	font-size: 8pt;
+
+}
+.sc11 {
+	position: absolute;
+	left: 20px;
+	top: 40px;
+	width: 275px;
+	z-index: 20;
+	color: white;
+	font-size: 7pt;
+	text-align: justify;
+}
+.sc12 {
+	position: absolute;
+	right: 20px;
+	top: 220px;
+	width: 275px;
+	z-index: 20;
+	color: white;
+	font-size: 7pt;
+	text-align: justify;
+}
+.sc21 {
+	position: absolute;
+	left: 20px;
+	top: 40px;
+	width: 290px;
+	z-index: 20;
+	color: white;
+	font-size: 7pt;
+	text-align: justify;
+}
+.sc22 {
+	position: absolute;
+	right: 20px;
+	top: 200px;
+	width: 285px;
+	z-index: 20;
+	color: white;
+	font-size: 7pt;
+	text-align: justify;
+}
+.sc31 {
+	position: absolute;
+	left: 20px;
+	top: 40px;
+	width: 560px;
+	z-index: 20;
+	color: white;
+	font-size: 7pt;
+	text-align: justify;
+}
+.sc32 {
+	position: absolute;
+	left: 20px;
+	top: 135px;
+	width: 430px;
+	z-index: 20;
+	color: white;
+	font-size: 7pt;
+	text-align: justify;
+}
+.sc41 {
+	position: absolute;
+	left: 90px;
+	top: 60px;
+	width: 460px;
+	z-index: 20;
+	color: white;
+	font-size: 7pt;
+	text-align: justify;
+}
+.sc51 {
+	position: absolute;
+	left: 23px;
+	top: 60px;
+	width: 550px;
+	z-index: 20;
+	color: white;
+	font-size: 7pt;
+	text-align: justify;
+}
+.sc52 {
+	position: absolute;
+	left: 23px;
+	top: 220px;
+	width: 550px;
+	z-index: 20;
+	color: white;
+	font-size: 7pt;
+	text-align: justify;
+}
+.sc61 {
+	position: absolute;
+	left: 20px;
+	top: 60px;
+	width: 550px;
+	z-index: 20;
+	color: white;
+	font-size: 7pt;
+	text-align: justify;
+}
+.sc62 {
+	position: absolute;
+	left: 60px;
+	top: 140px;
+	width: 450px;
+	z-index: 20;
+	color: white;
+	font-size: 7pt;
+	text-align: justify;
+}

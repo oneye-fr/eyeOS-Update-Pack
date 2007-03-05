@@ -1,0 +1,9 @@
+<?xml version="1.0"?>
+<eyeOSapp>
+  <title>Info Screen</title>
+  <category>System</category>
+  <window>
+    <height>420</height>
+    <width>550</width>
+  </window>
+</eyeOSapp>

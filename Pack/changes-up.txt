@@ -1,0 +1,167 @@
+Changes of the eyeOS Update-Pack
+================================
+
+eyeOS Update-Pack 0.9.3-5e
+--------------------------
+apps/eyeOptions.eyeapp/lang.php | added new language strings
+apps/eyeEdit.eyeapp/tiny_mce/ | updated the editor TinyMCE to version 2.1.0
+apps/eyeEdit.eyeapp/editorload.php | Added new buttons to eyeEdit
+
+eyeOS Update-Pack 0.9.3-5d
+--------------------------
+apps/eyeHome.eyeapp/aplic.php | fixed false icon-link
+apps/eyeEdit.eyeapp/listnotes.php | fixed false icon-link
+apps/eyeOptions.eyeapp/aplic.php | now demo-usrers can't delete the own user and now there's a way to restore the user
+desktop.php | removed faulse function!!!
+
+eyeOS Update-Pack 0.9.3-5c
+--------------------------
+desktop.php | now you're not auto-signed in after visiting a demo page
+apps/eyeOptions.eyeapp/aplic.php | fixed general problem with changing and restoring the wallpaper
+apps/eyeApps.eyeapp/aplic.php | fixed problem with moving eyeApps-Icon
+system/funcions.php | fixed bug in findGraphic-function
+apps/eyeCommand.eyeapp/lang.php | added empty language-strings
+
+eyeOS Update-Pack 0.9.3-5b
+--------------------------
+sorry, forgot to add here all files, but i can say: many files, :-)
+
+eyeOS Update-Pack 0.9.3-5a
+--------------------------
+changed to eyeOS 0.9.3-5a
+apps/eyeApps.eyeapp/lang.php | added two new strings
+mobilelang.php, login/loginlang.php & system/installlang.php | added ukrainian translation
+m.php, login/index.php & system/install.php | added ukrainian translation
+all lang.php | added ukrainian translation
+DOCS/new_lang.txt | added new strings and corrected some
+DOCS/full_lang.txt | deleted!
+system/baixar2.php | deleted!
+system/baixar.php | include the old system/baixar2.php and the old system/baixar.php
+apps/eyeHome.eyeapp/listfiles.php | changed the public download to system/baixar.php
+
+eyeOS Update-Pack 0.9.3-4c
+--------------------------
+some lang.php's | added all translations (for 6 apps not yet from the eyeWiki!!!)
+README.txt | added a corrected readme for eyeOS 0.9.x
+changes.txt | added a corrected change log of eyeOS 0.9.x
+login/index.php | changed the watch in the login form
+login/loginlang.php | changed the name of the language-file
+m.php | added language-parts for translations
+mobilelang.php | added language-file for m.php
+m-de.php, m-fr.php & m-es.php | deleted!
+index-de.php & system/install-de.php | deleted!
+system/installlang.php | added language-file for the installation
+system/install.php | added language-parts for translations
+index.php | changed the mobile file part
+
+eyeOS Update-Pack 0.9.3-4b
+--------------------------
+all lang.php | added all translations (not eyeOptions!!!)
+apps/eyeEdit.eyeapp/tiny_mce/ | added translations
+login/browlang.php | corrected some language strings and added some languages
+login/index.php | corrected some language strings
+apps/eyeInfo.eyeapp/aplic.php | added the Update-Pack and some links for the related projects
+apps/eyeEdit.eyeapp/editorload.php | no eyeEdit comes with more functions in the toolbar
+DOCS/new_lang.txt | some corrections
+
+eyeOS Update-Pack 0.9.3-4a
+--------------------------
+changed to eyeOS 0.9.3-4a
+apps/eyeMessages.eyeapp/aplic.php | Added some translation strings
+
+eyeOS Update-Pack 0.9.3-3a
+--------------------------
+changed to eyeOS 0.9.3-3a
+apps/eyeHome.eyeapp/css.css | changed the width of the boxes
+login/browlang.php | corrected some language strings and added some languages
+login/index.php | added some languages
+apps/eyeHome.eyeapp/de/text.html | updated help file
+apps/eyeEdit.eyeapp/de/text.html | updated help file
+apps/eyePhones.eyeapp/de/text.html | updated help file
+apps/eyeNav.eyeapp/de/above.html | corrected the help file style
+system/de/text.html | updated help file
+system/en/text.html | updated help file
+sysdefs.php | little text correction
+
+eyeOS Update-Pack 0.9.3-2f
+--------------------------
+login/index.php | changed the running eyeOS string
+login/browlang.php | corrected the language-question
+sysdefs.php | added new version
+
+eyeOS Update-Pack 0.9.3-2e
+--------------------------
+apps/eyeHome.eyeapp/aplic.php | corrected some strings
+system/funcions.php | added function to minimize windows
+system/lang.php | added string for minimizing windows
+system/scripts/x_eyeOSwin.js | added function to minimize windows
+system/themes/default/gfxwin/min.png | added minimize-image
+system/themes/BlueIris/gfxwin/min.png | added minimize-image
+system/themes/GreenIris/gfxwin/min.png | added minimize-image
+apps/eyeWelcome.eyeapp/propietas.xml | don't minimize this window
+apps/eyeFrames.eyeapp/propietas.xml | don't minimize this window
+apps/eyeHelp.app | don't minimize this window
+apps/eyeViewer.app | don't minimize this window
+DOCS/full_lang.txt | updated with new lang.php data
+DOCS/new_lang.txt | updated with new lang.php data
+sysdefs.php | added new version
+
+eyeOS Update-Pack 0.9.3-2d
+--------------------------
+login/browlang.php | added new German website
+apps/eyeCalc.eyeapp/propietas.xml | corrected the categority
+apps/eyeCalendar.eyeapp/propietas.xml | corrected the categority
+apps/eyeHome.eyeapp/aplic.php | added functions for public files
+apps/eyeHome.eyeapp/listfiles.php | added functions for public files
+apps/eyeHome.eyeapp/lang.php | edited German translation
+apps/eyeHome.eyeapp/css.css | added the css.css file from eyeOS 0.9.3-2a
+apps/eyeHome.eyeapp/img/ | added some images from eyeOS 0.9.3-2a
+apps/eyeEdit.eyeapp/aplic.php | deleted one function (to save all in My Home) with too many bugs
+apps/eyeEdit.eyeapp/listnotes.php | edited text to translate it
+apps/eyeEdit.eyeapp/lang.php | edited German translation
+sysdefs.php | deleted one function (to save all in My Home) with too many bugs
+login/index.php | updated links: eyeOS with UP
+sysdefs.php | added new version
+
+eyeOS Update-Pack 0.9.3-2c
+--------------------------
+apps/eyeHome.eyeapp/listfiles.php | Changed names of images
+system/themes/ & system/gfx/ | Updated, deleted and added images
+m.php, m-de.php, m-fr.php & m-es.php | Added delete function, extra download button, use a table, images can be changed by a theme
+
+eyeOS Update-Pack 0.9.3-2b
+--------------------------
+system/install-de.php | After saving settings in the German install script you see the German installer
+index.php | See the white background behind all the text
+apps/eyeTrash.eyeapp/aplic.php | Corrected bugs in the images!
+apps/eyeTrash.eyeapp/lang.php
+apps/eyeHome.eyeapp/aplic.php | Added new file-formats
+apps/eyeHome.eyeapp/listfiles.php | Added new function to download public files directly!
+apps/eyeHome.eyeapp/listfiles.php | Added function to download files per click on the name and the image!
+system/baxiar2.php | Added new function to download public files directly!
+
+eyeOS Update-Pack 0.9.3-2a
+-------------------------
+Updated to new eyeOS version and added a function to change the start page
+Fixed german translation in eyeEdit and a critical bug for save documents!
+
+eyeOS Update-Pack 0.9.3-1b
+--------------------------
+fixed a little bug for translation in apps/eyeEdit.eyeapp/listfiles.php
+fixed bug in apps/eyeHome.eyeapp/aplic.php
+Edited apps/eyeHome.eyeapp/css.css
+Changed the themes structure (Added the little pictures to the themes)
+Added the system help
+Edited login/browlang.php
+
+eyeOS Update-Pack 0.9.3-1a
+--------------------------
+changed to eyeOS 0.9.3-1 and edited propietas.xml of eyeCalc and eyeCalendar
+
+eyeOS Update-Pack 0.9.3-0b
+--------------------------
+fixed a bug in eyeHome, not to create a new dir
+
+eyeOS Update-Pack 0.9.3-0a
+--------------------------
+completely new designed, no changes here!
