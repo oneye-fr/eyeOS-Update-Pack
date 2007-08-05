@@ -154,7 +154,7 @@ case 'remove':     //Delete a file
 	          'filename' => $op[$name],
 	          'date' => $op["date"],
               'type' => $type,
-              'path' => $_GET['path']));
+              'path' => $_REQUEST['path']));
        unlink($dir.$file.$fext);
    } else {
         $op = parse_info($publicinfo.$file.".xml");
@@ -163,7 +163,7 @@ case 'remove':     //Delete a file
 	          'filename' => $op[$name],
 	          'date' => $op["date"],
               'type' => $type,
-              'path' => $_GET['path']));
+              'path' => $_REQUEST['path']));
         unlink($publicinfo.$file.".xml");
     }
      msg(_L('File moved to trash'));
@@ -245,7 +245,7 @@ case 'emptyfolder':     //Empty a folder
 	          'filename' => $op[$name],
 	          'date' => $op["date"],
               'type' => $type,
-              'path' => $_GET['path']));
+              'path' => $_REQUEST['path']));
        unlink($dir.$file.$fext);
    } else {
         $op = parse_info($publicinfo.$file.".xml");
@@ -254,7 +254,7 @@ case 'emptyfolder':     //Empty a folder
 	          'filename' => $op[$name],
 	          'date' => $op["date"],
               'type' => $type,
-              'path' => $_GET['path']));
+              'path' => $_REQUEST['path']));
         unlink($publicinfo.$file.".xml");
     }
    }
@@ -311,9 +311,9 @@ case 'removedir':     //Delete a directory
  }
 break;
 
-case 'copy':     //Copy a file
+case 'docopy':     //Copy a file
  if (!empty($_REQUEST['file'])) {
-  $to = $_GET['to'];
+  $to = $_REQUEST['copytodir'];
    if (($to == "edit") || ($to == "pubedit")) {
     $toext = ".xml";
     $name1 = "title";
@@ -321,10 +321,10 @@ case 'copy':     //Copy a file
     $toext = ".eyeFile";
     $name1 = "filename";
    }
-   if ($to == "private") $to = HOMEDIR.USR."/";
-   elseif ($to == "public") $to = ETCDIR."public/";
-   elseif ($to == "edit") $to = USRDIR.USR."/eyeEdit/";
-   elseif ($to == "pubedit") $to = ETCDIR."publicnotes/";
+   if ($to == "home") $to = HOMEDIR.USR."/" . $_REQUEST['dirname'] . '/';
+   elseif ($to == "public") $to = ETCDIR."public/" . $_REQUEST['dirname'] . '/';
+   elseif ($to == "edit") $to = USRDIR.USR."/eyeEdit/" . $_REQUEST['dirname'] . '/';
+   elseif ($to == "pubedit") $to = ETCDIR."publicnotes/" . $_REQUEST['dirname'] . '/';
    if (isset($private)) $from = HOMEDIR.USR."/";
    elseif (isset($public)) $from = ETCDIR."public/";
    elseif (isset($edit)) $from = USRDIR.USR."/eyeEdit/";
@@ -336,20 +336,14 @@ case 'copy':     //Copy a file
     $fromext = ".eyeFile";
     $name2 = "filename";
    }
+   if (file_exists($to)) {
   $file = rawurldecode(trim($_REQUEST['file']));
   if (0 === strpos (realpath ($from.$file), realpath( $from )) && is_file($from.$file)) {
    $pieces = explode("/", $file);
    $filename = $pieces[count($pieces)-1];
-   if ($to == USRDIR.USR."/eyeEdit/" || $to == ETCDIR."publicnotes/") {
-   if ($from == HOMEDIR.USR."/" || $from == ETCDIR."public/") {
    $fileext = strtolower(substr(strrchr($file, "."), 1));
-   if ($fileext == "eyenote") { $filename = uniqid(rand()); }
-   else { $filename = uniqid(rand()).".eyeNote"; }
-   } }
-   if ($from == USRDIR.USR."/eyeEdit/" || $from == ETCDIR."publicnotes/") {
-   if ($to == HOMEDIR.USR."/" || $to == ETCDIR."public/") {
-   $filename = uniqid(rand());
-   } }
+   if ($_REQUEST['copytodir'] == 'home' || $_REQUEST['copytodir'] == 'public') $filename = uniqid(rand());
+   else $filename = uniqid(rand()).".eyeNote";
    if (!is_file($to.$filename) && is_file($from.$file) && substr($file, -8) != ".eyeFile" || !is_file($to.$filename) && is_file($from.$file) && substr($file, -4) != ".xml")
      {
      copy($from.$file,$to . $filename);
@@ -363,8 +357,13 @@ case 'copy':     //Copy a file
        chmod ($to.$filename.$toext,0777); 
      }
      msg(_L('File succesfully copied'));
+	 if ($_REQUEST['delorigfile'] == 'on') {
+	 unlink($from.$file);
+	 if (is_file($from . $file.$fromext)) unlink($from . $file.$fromext);
+	 }
      }
-  }
+	 }
+} else msg(_L('The directory doesn\'t exists'));
  }
 break;
 
@@ -421,7 +420,7 @@ echo "
              <a class='menulink' href='#' onClick=\"javascript:document.getElementById('newdir').style.display='block';\" ><img style='margin-bottom: -3px;' border='0' src='".findGraphic('','open.png')."' /> "._L("New Folder")."</a>
         </div>
         <div class='eHmenutxt'>
-             <a class='menulink' href='#' onClick=\"javascript:document.getElementById('newupload').style.display='block';\"><img style='margin-bottom: -3px;' border='0' src='".findGraphic('','upload2.png')."' /> "._L("Upload a File")."</a>
+             <a class='menulink' href='#' onClick=\"javascript:document.getElementById('newupload').style.display='block';\"><img style='margin-bottom: -3px;' border='0' src='".findGraphic('','restore.png')."' /> "._L("Upload a File")."</a>
         </div>
         <div class='eHmenutxt'>
              <a class='menulink' href='?a=$eyeapp(public)&type=emptyfolder&path=$udir' onClick=\"return deletefile()\"><img style='margin-bottom: -3px;' border='0' src='".findGraphic('','delete.png')."' /> "._L("Empty folder")."</a>
@@ -447,7 +446,7 @@ echo "
              <a class='menulink' href='?a=eyeEdit.eyeapp'><img style='margin-bottom: -3px;' border='0' src='".findGraphic('','new.png')."' /> "._L("New note")."</a>
         </div>
         <div class='eHmenutxt'>
-             <a class='menulink' href='#' onClick=\"javascript:document.getElementById('newupload').style.display='block';\"><img style='margin-bottom: -3px;' border='0' src='".findGraphic('','upload2.png')."' /> "._L("Upload a File")."</a>
+             <a class='menulink' href='#' onClick=\"javascript:document.getElementById('newupload').style.display='block';\"><img style='margin-bottom: -3px;' border='0' src='".findGraphic('','restore.png')."' /> "._L("Upload a File")."</a>
         </div>
         <div class='eHmenutxt'>
              <a class='menulink' href='?a=$eyeapp(edit)&type=emptyfolder&path=$udir' onClick=\"return deletefile()\"><img style='margin-bottom: -3px;' border='0' src='".findGraphic('','delete.png')."' /> "._L("Empty folder")."</a>
@@ -463,7 +462,7 @@ echo "
              <a class='menulink' href='?a=eyeEdit.eyeapp'><img style='margin-bottom: -3px;' border='0' src='".findGraphic('','new.png')."' /> "._L("New note")."</a>
         </div>
         <div class='eHmenutxt'>
-             <a class='menulink' href='#' onClick=\"javascript:document.getElementById('newupload').style.display='block';\"><img style='margin-bottom: -3px;' border='0' src='".findGraphic('','upload2.png')."' /> "._L("Upload a File")."</a>
+             <a class='menulink' href='#' onClick=\"javascript:document.getElementById('newupload').style.display='block';\"><img style='margin-bottom: -3px;' border='0' src='".findGraphic('','restore.png')."' /> "._L("Upload a File")."</a>
         </div>
         <div class='eHmenutxt'>
              <a class='menulink' href='?a=$eyeapp(pubedit)&type=emptyfolder&path=$udir' onClick=\"return deletefile()\"><img style='margin-bottom: -3px;' border='0' src='".findGraphic('','delete.png')."' /> "._L("Empty folder")."</a>
@@ -490,6 +489,30 @@ echo "</a>
 <div class='eyeHomelist'>";
 include $appinfo['appdir']."listfiles.php";
 echo "</div>";
+
+if ($_REQUEST['type'] == 'showcopy') {
+echo "<div id='showcopy' class='bubble' style='left:50%; margin-left: -30px; top: 150px; width: 240px; height:90px; display: block;'>
+<div class='bubbletitle' >"._L('Copy a file to')."</div><div align='center'>
+  <form action=\"desktop.php?a=$eyeapp
+     ";
+    if (isset($public))
+      echo "(public)";
+      echo "
+ \" method=\"post\">
+   <input type='hidden' name='type' value='docopy' />
+   <input type='hidden' name='copytodir' value='" . $_REQUEST['copytodir'] . "' />
+   <input type='hidden' name='path' value='$udir' />
+   <input type='hidden' name='file' value='" . $_REQUEST['file'] . "' />
+   <div style='margin-bottom: 14px; margin-top: 10px;'>
+     " . $_REQUEST['copytodir'] . " / <input type='text' name='dirname' maxlength='15' size='22' /> /<br /><input name='delorigfile' type='checkbox'>Delete the original file</input></div>
+   <input style='border: 0; background-color: transparent; color: #929292;' TYPE='image' SRC='".findGraphic('','upload.png')."' /></div>
+  </form>
+   <div class='bubblecancel' style='margin-top: -3px;'>
+     <a href='#' onClick=\"javascript:document.getElementById('showcopy').style.display='none';\"><img border='0' alt='"._L('Cancel')."' title='"._L('Cancel')."' src='".findGraphic('','cancelwin.png')."' /></a>
+    </div>
+</div>
+";
+}
 
 echo "<div id='newdir' class='bubble' style='left:50%; margin-left: -30px; top: 150px; width: 190px; height:80px;'>
 <div class='bubbletitle' >"._L('Create a new directory')."</div><div align='center'>

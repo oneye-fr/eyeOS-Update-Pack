@@ -246,6 +246,7 @@ if (isset($private) || isset($public)) echo"
       <a href=\"javascript:showOptions('$compte')\">
         <img border='0' src='".findGraphic('','options.png')."'/>
       </a>
+      </a>
       <div id='$compte' class='eHbox' style='display:none;' >
       <a href='".SYSDIR."baixar.php?fabaixar=$udir$fenc&public=1'>
          <strong><img class='imgbox' alt='"._L('Download')."' title='"._L('Download')."' style='margin-top: 4px;' border='0' src='".findGraphic('','save.png')."'> "._L('Download')."
@@ -268,6 +269,7 @@ if (isset($private) || isset($public)) echo"
          <img class='imgbox' alt='"._L('Delete')."' title='"._L('Delete')."' style='margin-top: 4px;' border='0' src='".findGraphic('','delete.png')."'> "._L('Delete')."
       </a>
       <br />
+      <hr>
       <a href='?a=$eyeapp(trash)&type=restore&file=$fenc'>
          <img class='imgbox' alt='"._L('Restore')."' title='"._L('Restore')."' style='margin-top: 4px;' border='0' src='".findGraphic('','restore.png')."'> "._L('Restore')."
       </a>
@@ -291,15 +293,16 @@ if (isset($private) || isset($public)) echo"
          <img class='imgbox' alt='"._L('Delete')."' title='"._L('Delete')."' style='margin-top: 4px;' border='0' src='".findGraphic('','delete.png')."'> "._L('Delete')."
       </a>
       <br />
-      <a href='?a=$eyeapp(edit)&type=copy&to=private&file=$fenc'>
+      <hr>
+      <a href='?a=$eyeapp&type=showcopy&copytodir=home&file=$udir$fenc&path=$udir'>
          <img class='imgbox' alt='"._L('Copy to Home')."' title='"._L('Copy to Home')."' style='margin-top: 4px;' border='0' src='".findGraphic('','private.png')."'> "._L('Copy to Home')."
       </a>
       <br />
-      <a href='?a=$eyeapp(edit)&type=copy&to=public&file=$udir$fenc'>
+      <a href='?a=$eyeapp&type=showcopy&copytodir=public&file=$udir$fenc&path=$udir'>
          <img class='imgbox' alt='"._L('Copy to Public')."' title='"._L('Copy to Public')."' style='margin-top: 4px;' border='0' src='".findGraphic('','public.png')."'> "._L('Copy to Public')."
       </a>
       <br />
-      <a href='?a=$eyeapp(edit)&type=copy&to=pubedit&file=$udir$fenc'>
+      <a href='?a=$eyeapp&type=docopy&copytodir=pubedit&file=$udir$fenc&path=$udir'>
          <img class='imgbox' alt='"._L('Copy to public Notes')."' title='"._L('Copy to public Notes')."' style='margin-top: 4px;' border='0' src='".findGraphic('','edit.png')."'> "._L('Copy to public Notes')."
       </a>
     ";
@@ -329,17 +332,18 @@ if (isset($private) || isset($public)) echo"
          <img class='imgbox' alt='"._L('Delete')."' title='"._L('Delete')."' style='margin-top: 4px;' border='0' src='".findGraphic('','delete.png')."'> "._L('Delete')."
       </a>
       <br />
+      <hr>
       ";
       echo "
-      <a href='?a=$eyeapp(pubedit)&type=copy&to=private&file=$fenc'>
+      <a href='?a=$eyeapp&type=showcopy&copytodir=home&file=$udir$fenc&path=$udir'>
          <img class='imgbox' alt='"._L('Copy to Home')."' title='"._L('Copy to Home')."' style='margin-top: 4px;' border='0' src='".findGraphic('','private.png')."'> "._L('Copy to Home')."
       </a>
       <br />
-      <a href='?a=$eyeapp(pubedit)&type=copy&to=public&file=$fenc'>
+      <a href='?a=$eyeapp&type=showcopy&copytodir=public&file=$udir$fenc&path=$udir'>
          <img class='imgbox' alt='"._L('Copy to Public')."' title='"._L('Copy to Public')."' style='margin-top: 4px;' border='0' src='".findGraphic('','public.png')."'> "._L('Copy to Public')."
       </a>
       <br />
-      <a href='?a=$eyeapp(pubedit)&type=copy&to=edit&file=$fenc'>
+      <a href='?a=$eyeapp&type=docopy&copytodir=edit&file=$udir$fenc&path=$udir'>
          <img class='imgbox' alt='"._L('Copy to private Notes')."' title='"._L('Copy to private Notes')."' style='margin-top: 4px;' border='0' src='".findGraphic('','new.png')."'> "._L('Copy to private Notes')."
       </a>
     "; }
@@ -350,15 +354,20 @@ if (isset($private) || isset($public)) echo"
          <img class='imgbox' alt='"._L('Delete')."' title='"._L('Delete')."' style='margin-top: 4px;' border='0' src='".findGraphic('','delete.png')."'> "._L('Delete')."
       </a>
       <br />
-      <a href='?a=$eyeapp&type=copy&to=public&file=$udir$fenc'>
+      <hr>
+      <a href='?a=$eyeapp&type=showcopy&copytodir=home&file=$udir$fenc&path=$udir'>
+         <img class='imgbox' alt='"._L('Copy to Home')."' title='"._L('Copy to Home')."' style='margin-top: 4px;' border='0' src='".findGraphic('','private.png')."'> "._L('Copy to Home')."
+      </a>
+      <br />
+      <a href='?a=$eyeapp&type=showcopy&copytodir=public&file=$udir$fenc&path=$udir'>
          <img class='imgbox' alt='"._L('Copy to Public')."' title='"._L('Copy to Public')."' style='margin-top: 4px;' border='0' src='".findGraphic('','public.png')."'> "._L('Copy to Public')."
       </a>
       <br />
-      <a href='?a=$eyeapp&type=copy&to=edit&file=$udir$fenc'>
+      <a href='?a=$eyeapp&type=docopy&copytodir=edit&file=$udir$fenc&path=$udir'>
          <img class='imgbox' alt='"._L('Copy to private Notes')."' title='"._L('Copy to private Notes')."' style='margin-top: 4px;' border='0' src='".findGraphic('','new.png')."'> "._L('Copy to private Notes')."
       </a>
       <br />
-      <a href='?a=$eyeapp&type=copy&to=pubedit&file=$udir$fenc'>
+      <a href='?a=$eyeapp&type=docopy&copytodir=pubedit&file=$udir$fenc&path=$udir'>
          <img class='imgbox' alt='"._L('Copy to public Notes')."' title='"._L('Copy to public Notes')."' style='margin-top: 4px;' border='0' src='".findGraphic('','edit.png')."'> "._L('Copy to public Notes')."
       </a>
     ";
@@ -375,17 +384,22 @@ if (isset($private) || isset($public)) echo"
          <img class='imgbox' alt='"._L('Delete')."' title='"._L('Delete')."' style='margin-top: 4px;' border='0' src='".findGraphic('','delete.png')."'>  "._L('Delete')."
       </a>
       <br />
+      <hr>
       ";
       echo "
-      <a href='?a=$eyeapp(public)&type=copy&to=private&file=$fenc'>
+      <a href='?a=$eyeapp&type=showcopy&copytodir=home&file=$udir$fenc&path=$udir'>
          <img class='imgbox' alt='"._L('Copy to Home')."' title='"._L('Copy to Home')."' style='margin-top: 4px;' border='0' src='".findGraphic('','private.png')."'> "._L('Copy to Home')."
       </a>
       <br />
-      <a href='?a=$eyeapp(public)&type=copy&to=edit&file=$udir$fenc'>
+      <a href='?a=$eyeapp&type=showcopy&copytodir=public&file=$udir$fenc&path=$udir'>
+         <img class='imgbox' alt='"._L('Copy to Public')."' title='"._L('Copy to Public')."' style='margin-top: 4px;' border='0' src='".findGraphic('','public.png')."'> "._L('Copy to Public')."
+      </a>
+      <br />
+      <a href='?a=$eyeapp&type=docopy&copytodir=edit&file=$udir$fenc&path=$udir'>
          <img class='imgbox' alt='"._L('Copy to private Notes')."' title='"._L('Copy to private Notes')."' style='margin-top: 4px;' border='0' src='".findGraphic('','new.png')."'> "._L('Copy to private Notes')."
       </a>
       <br />
-      <a href='?a=$eyeapp(public)&type=copy&to=pubedit&file=$udir$fenc'>
+      <a href='?a=$eyeapp&type=docopy&copytodir=pubedit&file=$udir$fenc&path=$udir'>
          <img class='imgbox' alt='"._L('Copy to public Notes')."' title='"._L('Copy to public Notes')."' style='margin-top: 4px;' border='0' src='".findGraphic('','edit.png')."'> "._L('Copy to public Notes')."
       </a>
     "; }
