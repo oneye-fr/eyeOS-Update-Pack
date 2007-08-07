@@ -3,63 +3,16 @@ ToDo:
 	Check all files, not checked yet.
 	Recheck all files and rewrite some parts.
 	Add language support for all strings and write official translation files
-	Include FULL translations into each release
-	Redesign the style of all tabs
+	Include (only!) full translations into each release
+	Redesign the style of the groups and users tab
+	Add the links tab as default
 	Redesign the multi groups selection
-	Add a function to choose, if eyeAdmin or eyeControl will be launched by clicking the menu in eyeBar
-	Add a function to check is there newer version available (- Vilu will do that)
-	Add theme selection functions (for General tab - HarimaKenji searching on it).
+	Add a function to check is there newer version available (using the sf.net pages!)   by vilu and lars-sh
+	Add theme selection function for each user and a default tab!   by HarimaKenji and lars-sh
 
 	Later:
 	------
 		Add a tab for system configuration files
 		Add a tab for creating translations
-		Add themes support
-		Add a default language support
-		Add more apps support
-		Use two Tabcontrols for better sorting.
-
-Changes:
-========
-HarimaKenji | 07.08.2007
-	New: Added "General" tab with language, wallpaper selection & password modification.
-
-vilu | 07.08.2007
-	New: Request tab now supports to send confirmation email to user
-	New: Added eyeLink plugin for non root users (eyeLink_v_alpha2)
-	New: Added Check updates button to about tab.
-	Fixed: Problems with Users tab (events/users.eyecode)
-
-lars-sh | 06.08.2007
-	New: Added functions for non root users. (Only the About tab, yet!)
-	New: Added function for parameters.
-	New: Added a selection for the default system language for new users.
-	Design: Redesigned the About tab because of the size change!
-	Changed: Size of the window and the tab control
-
-lars-sh | 05.08.2007
-	New: Added the license(.txt) with GNU General Public License 3
-	New: Added textarea for changes and to do. Will be removed before the final release!
-	Design: Redesigned the General tab
-	Changed: Deleted the language selection at the General tab
-	Changed: Version in info.xml
-	Fixed: Problem with Labels
-	Checked: def_tabs/general.eyecode
-	Checked: libs/users.eyecode
-	Checked: libs/groups.eyecode
-
-lars-sh | 04.08.2007
-	New: Added a sortable file for information about not default tabs
-	Changed: Changed Icon to TNT's attached file from http://bugs.eyeos.org/view.php?id=17
-	Changed: Events will be loaded from the folder events/.
-	Changed: Libraries will be loaded from the folder libs/.
-	Changed: Modules will be loaded from folders. Default tabs from the def_tabs/ dir and other tabs from the tabs/ dir
-	Fixed: Problem starting eyeAdmin
-	Design: Redesigned the About tab
-	Checked: events/general.eyecode
-	Checked: def_tabs/about.eyecode
-	Checked: info.xml
-	Checked: events.eyecode
-	Checked: app.eyecode
-===============================================================
-This Textarea will be removed before the final version release!
+		Install, update(!) and delete apps support
+		Use a left sidebar for easier using more tabs! (like Linux)
