@@ -1,0 +1,151 @@
+<?php
+/*
+		eyeAdmin 0.9
+			04.08.2007
+	--------------------------------------------------
+		Made for eyeOS project
+			Webbased Operating System (WebOS)
+				www.eyeos.org | www.eyeos.info
+	--------------------------------------------------
+		Jonas Bueth (de)		bueth			jonas.bueth@eyeos.org
+		Geoffrey Chery (fr)	HarimaKenji	chibi.harima@gmail.com
+		Lars Knickrehm (de)	lars-sh		lars-sh@eye-os.de
+		Ville Perkkio (fi)		vilu
+	--------------------------------------------------
+		Need help? Contact us or the eyeOS community!
+			http://forums.eyeos.org/
+	--------------------------------------------------
+		eyeAdmin is released under the GNU Generla Public License (GPL)
+			provided with each relese in the license.txt
+			or at www.gnu.org/licenses/gpl.txt
+	--------------------------------------------------
+		To help continued development please consider making a donation
+			at www.eyeos.org/donations
+*/
+$myCssText = array('font-weight' => 'bold');
+$eyeAdminInfo = eyeXML('getXMLfile',array(EYE_ROOT . '/' . APP_DIR . '/eyeAdmin/info.xml'));
+$block1x = 15;
+$text1x = 275;
+$block1y = 40;
+
+$myLabel1 = new Label(array(
+	'name' => 'eyeAdmin_about_label_1',
+	'father' => $aboutTab,
+	'text' => 'About eyeAdmin ' . $eyeAdminInfo['package'][0]['version'][0],
+	'x' => $block1x,
+	'y' => 10
+));
+$myLabel1->show();
+$myLabel1->setCss($myCssText);
+
+//Hiddenfield stores the version information
+$hiddenVersion = new Hidden(array(
+	'name'=>'hiddenVersion',
+	'father'=>$aboutTab,
+	'text'=>$eyeAdminInfo['package'][0]['version'][0]
+));
+$hiddenVersion->show();
+
+
+
+$myLabel2 = new Label(array(
+	'name' => 'eyeAdmin_about_label_3',
+	'father' => $aboutTab,
+	'text' => 'List of installed tabs',
+	'x' => $block1x,
+	'y' => $block1y
+));
+$myLabel2->show();
+$myLabel2->setCss($myCssText);
+
+$block1y = $block1y + 20;
+
+//Table with installed tabs
+$sortypes = array('String', 'Number', 'String', 'String');
+$myHeader = array('Name', 'Version', 'Author', 'Description');
+
+$myTable = new Sortabletable(array(
+	'name'=>'eyeAdmin_about_sortabletable_1',
+	'father'=>$aboutTab,
+	'sortypes'=>$sortypes,
+	'theader'=>$myHeader,
+	'x'=>$block1x,'y'=>$block1y + 4,
+	'width'=>570,'height'=>150,
+	'master'=>0
+));
+$myTable->show();
+
+// Add installed tabs to the table
+$dir = EYE_ROOT.'/'.APP_DIR.'/eyeAdmin/tabs/';
+if ($open = opendir($dir)) {
+	while ($file = readdir($open)) {
+		if (substr($file,strlen($file) - 4,strlen($file)) == '.xml') {
+			$eyeAdminTabInfo = eyeXML('getXMLfile',array($dir . $file));
+			if ($eyeAdminTabInfo['tab'][0]['permissions'][0] == 'root' && $currentUser == ROOTUSER || $eyeAdminTabInfo['tab'][0]['permissions'][0] == 'users' && $currentUser != ROOTUSER || $eyeAdminTabInfo['tab'][0]['permissions'][0] == 'all') {
+				$myTable->addRow(array(
+					$eyeAdminTabInfo['tab'][0]['name'][0],
+					$eyeAdminTabInfo['tab'][0]['version'][0],
+					$eyeAdminTabInfo['tab'][0]['author'][0],
+					$eyeAdminTabInfo['tab'][0]['description'][0]
+				));
+			}
+		}
+	}
+	closedir($open);
+}
+
+$block1y = $block1y + 160;
+
+$myText1 = new Label(array(
+	'name' => 'eyeAdmin_about_label_2',
+	'father' => $aboutTab,
+	'text' =>'Developers',
+	'x' => $block1x, 
+	'y' => $block1y + 4
+));
+$myText1->show();
+$myText1->setCss($myCssText);
+
+$block1y = $block1y + 20;
+
+$developers = array(
+	'Jonas Bueth (Germany) - bueth',
+	'Geoffrey Chery (France) - HarimaKenji',
+	'Lars Knickrehm (Germany) - lars-sh',
+	'Ville Perkkio (Finland) - vilu'
+);
+
+for($i = 0; $developers[$i]; $i++) {
+	$name = 'eyeAdmin_about_label_developer' . $i;
+	$myDev = new Label(array(
+		'name' => $name,
+		'father' => $aboutTab,
+		'text' => $developers[$i],
+		'x' => $block1x + 5, 
+		'y' => $block1y + 4
+	));
+	$myDev->show();
+	$block1y = $block1y + 20;
+}
+
+$myIcon = new ImageBox(array(
+	'name' => 'eyeAdmin_about_icon_1',
+	'father' => $aboutTab,
+	'horiz' => 1,
+	'vert' => 1,
+	'alt' => '',
+	'url' => 'index.php?extern=apps/eyeAdmin/icon.png'
+));
+$myIcon->show();
+
+$myButton1 = new Button(array(
+	'name' => 'button_checkUpdates',
+	'father' => $aboutTab,
+	'signal' => 'button_checkUpdates_click',
+	'caption' => 'Check for updates',
+	'vert' => 1,
+	'x' => 250
+));
+$myButton1->addFriend($hiddenVersion);
+$myButton1->show();
+?>

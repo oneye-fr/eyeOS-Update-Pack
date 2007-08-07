@@ -1,0 +1,796 @@
+<?php
+
+//------ Added by HarimaKenji
+//-- Return assigned groupnames in user's XML 
+
+function assignedGroups($params) {
+	
+	if($params == null || count($params) < 1){
+		reqLib('errorCodes','setErrorCode',array(INCORRECT_PARAMS));
+		return false;
+	}
+	
+	$username = $params ;		
+	$userLenght = strlen($username);
+	$userPath = $username{0}.$username{$userLenght-1}.substr($userLenght,-1);
+	
+	$path = EYE_ROOT.'/'.ACCOUNT_DIR.'/'.$userPath.'/'.$username.'.xml';
+	$data = eyeXML('getXMLfile',array($path));
+	
+	for($i=0; $data['eyeUser'][0]['group'][$i]; $i++){
+		$tab[$i] = ucfirst($data['eyeUser'][0]['group'][$i]);
+	}
+		
+	return $tab;
+}
+
+//----------------------------------------------------------------
+//*+------------------------------------------------------------+*
+
+
+/////////////////////
+////USER EVENTS
+
+//Click Delete User
+//Opens a new Window, asking really
+function eyeAdmin_on_button_deleteUser_click()
+{
+	//is a User selected?
+	$username = strtolower($GLOBALS['table_Users']->selected);
+	if(empty($username))
+	{
+		service('eyex','messageBox',array('content'=>'Please select a user you want to delete.'));
+		return;
+	}
+	else if($username == ROOTUSER)
+	{
+		service('eyex','messageBox',array('content'=>'You can not delete the Root user.'));
+		return;
+	}
+	
+	//Show Question Dialog
+	$dialogWindow = new Window(array(
+		'name'=>'eyeAdmin_deleteUser_WND',
+		'father'=>'eyeAdmin_WND',
+		'removepid'=>0,
+		'type'=>NOLIST_CLOSE_WINDOW,
+		'cent'=>1,
+		'width'=>250,'height'=>140,
+		'title'=>'Delete User'
+	));
+	$dialogWindow->show();
+	
+	//Hiddenfield stores the username
+	$hiddenUsername = new Hidden(array(
+		'name'=>'deleteUser_hiddenUsername',
+		'father'=>'eyeAdmin_deleteUser_WND_Content',
+		'text'=>$username
+	));
+	$hiddenUsername->show();
+	
+	$dialogLabel = new Label(array(
+		'name'=>'deleteUser_label',
+		'father'=>'eyeAdmin_deleteUser_WND_Content',
+		'text'=>"Do you really want to delete the user ".$username." ?",
+		'y'=>20,'x'=>15
+	));
+	$dialogLabel->show();
+	
+	$dialogButtonYes = new Button(array(
+		'name'=>'deleteUser_yesButton',
+		'father'=>'eyeAdmin_deleteUser_WND_Content',
+		'caption'=>'Yes',
+		'x'=>15,'y'=>78,
+		'signal'=>'deleteUser_yes'
+	));
+	$dialogButtonYes->addFriend($hiddenUsername);
+	$dialogButtonYes->addFriend($myTable);
+	$dialogButtonYes->addFriend($myInfoLabel);
+	$dialogButtonYes->show();
+	
+	$dialogButtonNo = new Button(array(
+		'name'=>'deleteUser_noButton',
+		'father'=>'eyeAdmin_deleteUser_WND_Content',
+		'caption'=>'No',
+		'x'=>200,'y'=>78,
+		'signal'=>'deleteUser_no'
+	));
+	$dialogButtonNo->show();
+}
+
+//Clicking No in Delete User Dialog
+//Closes the Dialog
+function eyeAdmin_on_deleteUser_no()
+{
+	//print_r($GLOBALS);exit;
+	$GLOBALS['eyeAdmin_deleteUser_WND']->close();
+}
+
+//Clickin Yes in Delete User Dialog
+//Deletes the User stored in deleteUser_hiddenUsername
+//Removes the row of the User in the sortableTable
+//Closes the Dialog
+function eyeAdmin_on_deleteUser_yes()
+{
+	$username = $GLOBALS['deleteUser_hiddenUsername']->text;
+	service('um','deleteUser',array($username));
+	service('eyex','messageBox',array('content'=>"User ".$username." deleted."));
+	
+	eyeAdmin_user_refresh($GLOBALS['table_Users'], $GLOBALS['userInfo_label']);
+	$GLOBALS['eyeAdmin_deleteUser_WND']->close();
+}
+
+
+
+//Click Edit User
+//Opens a new Window. For Editing Email and Group
+function eyeAdmin_on_button_editUser_click()
+{
+	//is a User selected?
+	$username = strtolower($GLOBALS['table_Users']->selected);
+	$userInfo = service('um', 'retriveUser', array($username));
+	if(!$userInfo)
+	{
+		service('eyex','messageBox',array('content'=>'Please select a user you want to edit.'));
+		return;
+	}
+	else
+	{
+		if(is_array($userInfo))
+		{
+			$userInfo = $userInfo['eyeUser'][0];
+			if(empty($userInfo['username'][0]))
+			{
+				service('eyex','messageBox',array('content'=>'Error while reading the user xml configuration.'));
+				return;
+			}
+		}
+	}
+
+	//Show Edit User Dialog
+	$dialogWindow = new Window(array(
+		'name'=>'eyeAdmin_editUser_WND',
+		'father'=>'eyeAdmin_WND',
+		'removepid'=>0,
+		'type'=>NOLIST_CLOSE_WINDOW,
+		'cent'=>1,
+		'width'=>300,'height'=>300,
+		'title'=>'Edit User'
+	));
+	$dialogWindow->show();
+
+	
+	//Name Textbox Disabled
+	$myLabelName = new Label(array(
+		'name'=>'editUser_nameLBL',
+		'father'=>'eyeAdmin_editUser_WND_Content',
+		'x'=>15,'y'=>20,
+		'text'=>'User'
+	));
+	$myLabelName->show();
+	
+	$myTextboxName = new Textbox(array(
+		'name'=>'editUser_name',
+		'width'=>185,
+		'father'=>'eyeAdmin_editUser_WND_Content',
+		'x'=>20,
+		'y'=>18,
+		'horiz'=>1,
+		'text'=>$userInfo['username'][0],
+		'enabled'=>0
+	));
+	$myTextboxName->show();
+
+	//Email Textbox
+	$myLabelEmail = new Label(array(
+		'name'=>'editUser_emailLBL',
+		'father'=>'eyeAdmin_editUser_WND_Content',
+		'x'=>15,'y'=>40,
+		'text'=>'Email'
+	));
+	$myLabelEmail->show();
+	
+	$myTextboxEmail = new Textbox(array(
+		'name'=>'editUser_email',
+		'width'=>185,
+		'father'=>'eyeAdmin_editUser_WND_Content',
+		'x'=>20,
+		'y'=>38,
+		'horiz' => 1,
+		'text'=>$userInfo['email'][0]
+	));
+	$myTextboxEmail->show();
+	//$myTextboxEmail->addEnterEventMsg('editUser_ok');
+	$myTextboxEmail->focus();
+	
+
+//----- Added by HarimaKenji -------
+//------------- New Version -------------------
+
+//Grouplist label
+	$myLabelGrouplist = new Label(array(
+		'name' => 'editUser_grouplistLBL',
+		'father' => 'eyeAdmin_editUser_WND_Content',
+		'x' => $myLabelEmail->x,
+		'y' => 30+$myLabelEmail->y,
+		'text' => 'Grouplist'
+		));
+	$myLabelGrouplist->show();
+
+//OK Button
+	$dialogButtonOK = new Button(array(
+		'name'=>'editUser_yesButton',
+		'father'=>'eyeAdmin_editUser_WND_Content',
+		'caption'=>'OK',
+		'horiz'=>0,
+		'vert'=>1,
+		'x'=>15,
+		'y'=>15,
+		'signal'=>'editUser_ok'
+	));
+	
+//All Groups Button
+	$dialogButtonAll = new Button(array(
+		'name'=>'editUser_allButton',
+		'father'=>'eyeAdmin_editUser_WND_Content',
+		'caption'=>'All',
+		'horiz'=>0,
+		'vert'=>1,
+		'x'=>40+$dialogButtonOK->x,
+		'y'=>15,
+		'signal'=>'editUser_all'
+	));
+	
+//None Group Button
+	$dialogButtonNone = new Button(array(
+		'name'=>'editUser_noneButton',
+		'father'=>'eyeAdmin_editUser_WND_Content',
+		'caption'=>'None',
+		'horiz'=>0,
+		'vert'=>1,
+		'x'=>50+$dialogButtonAll->x,
+		'y'=>15,
+		'signal'=>'editUser_none'
+	));
+	
+//Reset Group Button
+	$dialogButtonReset = new Button(array(
+		'name'=>'editUser_resetButton',
+		'father'=>'eyeAdmin_editUser_WND_Content',
+		'caption'=>'Reset',
+		'horiz'=>0,
+		'vert'=>1,
+		'x'=>58+$dialogButtonNone->x,
+		'y'=>15,
+		'signal'=>'editUser_reset'
+	));
+
+//Group Checkboxes
+	$userGroups = assignedGroups($username);
+
+	$GroupList = glob(EYE_ROOT.'/'.GROUPS_DIR.'/*', GLOB_ONLYDIR);
+	
+	$i=0;
+	while($GroupList[$i]){
+		$group[$i] = ucfirst(substr(strrchr($GroupList[$i],"/"), 1 ));
+		if(in_array($group[$i],$userGroups))	$check[$i] = 1;
+		else									$check[$i] = 0;
+		$i++;
+	}
+	
+	$posX = 20;
+	$posYref = 20+$myLabelGrouplist->y;
+	$posY = $posYref;
+
+//nbBoxRow is the number of checkboxes for a row.
+	$nbBoxRow = 6;
+	$box=0;
+
+	while($group[$box])
+	{	
+		$myCheckBox = new Checkbox(array(
+			'name' => "editUser_groupchk$box",
+			'father' => 'eyeAdmin_editUser_WND_Content',
+			'text' => $group[$box],
+			'x' => $posX,
+			'y' => $posY,
+			'value' => 'true',
+			'checked'=> $check[$box]
+		));
+		$myCheckBox->show();
+	
+		if(($box+1)%$nbBoxRow == 0 && $box != 0) {
+			$posX = $posX + 130;
+			$posY = $posYref;			
+		}
+		else{
+			$posY = $posY + 20;
+		}			
+		$box++;
+		
+		$dialogButtonOK->addFriend($myCheckBox);
+		$dialogButtonAll->addFriend($myCheckBox);
+		$dialogButtonNone->addFriend($myCheckBox);
+		$dialogButtonReset->addFriend($myCheckBox);
+	}
+
+	$dialogButtonOK->addFriend($myTextboxName);
+	$dialogButtonOK->addFriend($myTextboxEmail);
+	$dialogButtonOK->addFriend($myTable);
+	$dialogButtonOK->addFriend($myInfoLabel);
+	$dialogButtonOK->show();
+	
+	$dialogButtonAll->show();
+	$dialogButtonNone->show();
+	$dialogButtonReset->show();
+
+	
+	//Cancel Button
+	$dialogButtonCancel = new Button(array(
+		'name'=>'editUser_noButton',
+		'father'=>'eyeAdmin_editUser_WND_Content',
+		'caption'=>'Cancel',
+		'horiz'=>1,
+		'vert'=>1,
+		'x'=>15,
+		'y'=>15,
+		'signal'=>'editUser_cancel'
+	));
+	$dialogButtonCancel->show();
+}
+
+//closes the Edit dialog
+function eyeAdmin_on_editUser_cancel()
+{
+	$GLOBALS['eyeAdmin_editUser_WND']->close();
+}
+
+//select all Group Checkboxes
+function eyeAdmin_on_editUser_all()
+{
+	for($box=0;	$GLOBALS['editUser_groupchk'.$box.'']==1; $box++) {
+		$name = 'editUser_groupchk'.$box.'';		
+		$GLOBALS[$name]->check();		
+	}
+}
+
+//select none Group Checkboxes
+function eyeAdmin_on_editUser_none()
+{
+	for($box=0;	$GLOBALS['editUser_groupchk'.$box.'']==1; $box++) {
+		$name = 'editUser_groupchk'.$box.'';		
+		$GLOBALS[$name]->uncheck();		
+	}
+}
+
+//reset of Group Checkboxes
+function eyeAdmin_on_editUser_reset()
+{
+	$username = $GLOBALS['editUser_name']->text;
+	$userGroups = assignedGroups($username);
+	
+	for($box=0;	$GLOBALS['editUser_groupchk'.$box.'']==1; $box++) {
+		$name = 'editUser_groupchk'.$box.'';		
+		if(in_array($GLOBALS[$name]->text,$userGroups))	$GLOBALS[$name]->check();
+		else											$GLOBALS[$name]->uncheck();
+	}
+}
+
+//Updates the user (if a group is selected)
+//refreshes the User Table
+function eyeAdmin_on_editUser_ok()
+{
+
+	$username = $GLOBALS['editUser_name']->text;
+	$email = $GLOBALS['editUser_email']->text;
+	
+	
+	//------ Added by HarimaKenji ----------
+	
+	$userLenght = strlen($username);
+	$userPath = $username{0}.$username{$userLenght-1}.substr($userLenght,-1);
+	
+	$path = EYE_ROOT.'/'.ACCOUNT_DIR.'/'.$userPath.'/'.$username.'.xml';
+	
+	$num=0;
+
+	for($box=0;	$GLOBALS['editUser_groupchk'.$box.'']==1; $box++) {
+		$name = 'editUser_groupchk'.$box.'';		
+		if($GLOBALS[$name]->checked) {
+			$groupChecked[$num]=$GLOBALS[$name]->text;
+			$num++;
+		}
+	}
+
+	if(!is_array($groupChecked))
+	{
+		//service('eyex','messageBox',array('content'=>'User without group.'));
+		$groupChecked[0]='';
+	}
+	
+	$userInfo = service('um', 'retriveUser', array($username));
+	if(is_array($userInfo))
+	{
+		while($userInfo['eyeUser'][0]['group']) {
+			array_shift($userInfo['eyeUser'][0]['group']);
+		}
+		
+		$userInfo['eyeUser'][0]['email'][0] = $email;
+		$userInfo['eyeUser'][0]['group'][0] = strtolower($groupChecked[0]);
+				
+		service('um', 'updateUser', array(
+	 		'username' => $userInfo['eyeUser'][0]['username'][0],
+	 		'password' => $userInfo['eyeUser'][0]['password'][0],
+	 		'email' => $userInfo['eyeUser'][0]['email'][0],
+	 		'createDate' => $userInfo['eyeUser'][0]['createDate'][0],
+			'group' => $userInfo['eyeUser'][0]['group'][0]
+		));
+		
+		if(array_shift($groupChecked)) {
+			//service('eyex','messageBox',array('content'=>$groupChecked[0]));
+			foreach($groupChecked as $groupname) {
+				array_push($userInfo['eyeUser'][0]['group'],strtolower($groupname));
+			}
+		}
+
+		$xml = reqLib('eyeXML','array2xml',array($userInfo));
+		$fp = service('vfs','real_open',array($path,'w'));
+	
+		fwrite($fp,$xml);
+		fclose($fp);
+		
+		service('eyex','messageBox',array('content'=>'User grouplist successfully updated.'));
+		
+		eyeAdmin_user_refresh($GLOBALS['table_Users'], $GLOBALS['userInfo_label']);
+	}
+	$GLOBALS['eyeAdmin_editUser_WND']->close();
+}
+
+
+
+/////////------ Added by HarimaKenji ---------//////////////////
+
+//Click New User
+//Opens a new Window. For Entering Name, Email and Group
+
+function eyeAdmin_on_button_newUser_click()
+{
+	
+//Show New User Dialog
+	$dialogWindow = new Window(array(
+		'name'=>'eyeAdmin_newUser_WND',
+		'father'=>'eyeAdmin_WND',
+		'removepid'=>0,
+		'type'=>NOLIST_CLOSE_WINDOW,
+		'cent'=>1,
+		'width'=>300,'height'=>350,
+		'title'=>'New User'
+	));
+	$dialogWindow->show();
+
+
+//Name Textbox Disabled
+	$myLabelName = new Label(array(
+		'name'=>'newUser_nameLBL',
+		'father'=>'eyeAdmin_newUser_WND_Content',
+		'x'=>15,
+		'y'=>20,
+		'text'=>'User'
+	));
+	$myLabelName->show();
+	
+	$myTextboxName = new Textbox(array(
+		'name'=>'newUser_name',
+		'width'=>185,
+		'father'=>'eyeAdmin_newUser_WND_Content',
+		'horiz'=>1,
+		'x'=>15,
+		'y'=>18,
+		'text'=>''
+	));
+	$myTextboxName->show();
+	$myTextboxName->focus();	
+	
+//Password Textbox Disabled
+	$myLabelPassword = new Label(array(
+		'name'=>'newUser_passwordLBL',
+		'father'=>'eyeAdmin_newUser_WND_Content',
+		'x'=>15,
+		'y'=>20+$myLabelName->y,
+		'text'=>'Password'
+	));
+	$myLabelPassword->show();
+	
+	$myTextboxPassword = new Textbox(array(
+		'name'=>'newUser_password',
+		'width'=>185,
+		'father'=>'eyeAdmin_newUser_WND_Content',
+		'horiz'=>1,
+		'x'=>15,
+		'y'=>20+$myTextboxName->y,
+		'password'=>1,
+		'text'=>''
+	));
+	$myTextboxPassword->show();
+	
+	
+//Password Confirmation Textbox Disabled
+	$myLabelConfirm = new Label(array(
+		'name'=>'newUser_confirmLBL',
+		'father'=>'eyeAdmin_newUser_WND_Content',
+		'x'=>15,
+		'y'=>20+$myLabelPassword->y,
+		'text'=>'Confirmation'
+	));
+	$myLabelConfirm->show();
+	
+	$myTextboxConfirm = new Textbox(array(
+		'name'=>'newUser_confirm',
+		'width'=>185,
+		'father'=>'eyeAdmin_newUser_WND_Content',
+		'horiz'=>1,
+		'x'=>15,
+		'y'=>20+$myTextboxPassword->y,
+		'password'=>1,
+		'text'=>''
+	));
+	$myTextboxConfirm->show();
+
+	
+//Email Textbox
+	$myLabelEmail = new Label(array(
+		'name'=>'newUser_emailLBL',
+		'father'=>'eyeAdmin_newUser_WND_Content',
+		'x'=>15,
+		'y'=>20+$myLabelConfirm->y,
+		'text'=>'Email'
+	));
+	$myLabelEmail->show();
+	
+	$myTextboxEmail = new Textbox(array(
+		'name'=>'newUser_email',
+		'width'=>185,
+		'father'=>'eyeAdmin_newUser_WND_Content',
+		'horiz'=>1,
+		'x'=>15,
+		'y'=>20+$myTextboxConfirm->y,
+		'text'=>''
+	));
+	$myTextboxEmail->show();
+	//$myTextboxEmail->addEnterEventMsg('newUser_ok');
+	
+//------------- New Version -------------------
+
+//Grouplist label
+	$myLabelGrouplist = new Label(array(
+		'name' => 'newUser_grouplistLBL',
+		'father' => 'eyeAdmin_newUser_WND_Content',
+		'x' => $myLabelEmail->x,
+		'y' => 30+$myLabelEmail->y,
+		'text' => 'Grouplist'
+		));
+	$myLabelGrouplist->show();
+
+
+//OK Button
+	$dialogButtonOK = new Button(array(
+		'name'=>'newUser_yesButton',
+		'father'=>'eyeAdmin_newUser_WND_Content',
+		'caption'=>'OK',
+		'horiz'=>0,
+		'vert'=>1,
+		'x'=>15,
+		'y'=>15,
+		'signal'=>'newUser_ok'
+	));
+
+//All Groups Button
+	$dialogButtonAll = new Button(array(
+		'name'=>'newUser_allButton',
+		'father'=>'eyeAdmin_newUser_WND_Content',
+		'caption'=>'All',
+		'horiz'=>0,
+		'vert'=>1,
+		'x'=>50+$dialogButtonOK->x,
+		'y'=>15,
+		'signal'=>'newUser_all'
+	));
+	
+//None Group Button
+	$dialogButtonNone = new Button(array(
+		'name'=>'newUser_noneButton',
+		'father'=>'eyeAdmin_newUser_WND_Content',
+		'caption'=>'None',
+		'horiz'=>0,
+		'vert'=>1,
+		'x'=>50+$dialogButtonAll->x,
+		'y'=>15,
+		'signal'=>'newUser_none'
+	));
+	$GroupList = glob(EYE_ROOT.'/'.GROUPS_DIR.'/*', GLOB_ONLYDIR);
+	
+	$i=0;
+	while($GroupList[$i]){
+		$group[$i] = ucfirst(substr(strrchr($GroupList[$i],"/"), 1 ));
+		$i++;
+	}
+	
+	$posX = 20;
+	$posYref = 20+$myLabelGrouplist->y;
+	$posY = $posYref;
+
+//nbBoxRow is the number of checkboxes for a row.
+	$nbBoxRow = 6;
+	$box=0;
+
+	while($group[$box])
+	{	
+		$myCheckBox = new Checkbox(array(
+			'name' => "newUser_groupchk$box",
+			'father' => 'eyeAdmin_newUser_WND_Content',
+			'text' => $group[$box],
+			'x' => $posX,
+			'y' => $posY,
+			'value' => 'true'
+		));
+		$myCheckBox->show();
+	
+		if(($box+1)%$nbBoxRow == 0 && $box != 0) {
+			$posX = $posX + 130;
+			$posY = $posYref;			
+		}
+		else{
+			$posY = $posY + 20;
+		}
+			
+		$box++;
+		
+		$dialogButtonOK->addFriend($myCheckBox);
+		$dialogButtonAll->addFriend($myCheckBox);
+		$dialogButtonNone->addFriend($myCheckBox);
+	}
+
+	$dialogButtonOK->addFriend($myTextboxName);
+	$dialogButtonOK->addFriend($myTextboxPassword);
+	$dialogButtonOK->addFriend($myTextboxConfirm);
+	$dialogButtonOK->addFriend($myTextboxEmail);
+	$dialogButtonOK->addFriend($myTable);
+	$dialogButtonOK->addFriend($myInfoLabel);
+	$dialogButtonOK->show();
+
+	$dialogButtonAll->show();
+	$dialogButtonNone->show();
+	
+//Cancel Button
+	$dialogButtonCancel = new Button(array(
+		'name'=>'newUser_noButton',
+		'father'=>'eyeAdmin_newUser_WND_Content',
+		'caption'=>'Cancel',
+		'horiz'=>1,
+		'vert'=>1,
+		'x'=>15,
+		'y'=>15,
+		'signal'=>'newUser_cancel'
+	));
+	$dialogButtonCancel->show();
+}
+
+
+//closes the New dialog
+function eyeAdmin_on_newUser_cancel()
+{
+	$GLOBALS['eyeAdmin_newUser_WND']->close();
+}
+
+//select all Group Checkboxes
+function eyeAdmin_on_newUser_all()
+{
+	for($box=0;	$GLOBALS['newUser_groupchk'.$box.'']==1; $box++) {
+		$name = 'newUser_groupchk'.$box.'';		
+		$GLOBALS[$name]->check();		
+	}
+}
+
+//select none Group Checkboxes
+function eyeAdmin_on_newUser_none()
+{
+	for($box=0;	$GLOBALS['newUser_groupchk'.$box.'']==1; $box++) {
+		$name = 'newUser_groupchk'.$box.'';		
+		$GLOBALS[$name]->uncheck();		
+	}
+}
+
+
+//Create the user (if a group is selected)
+//refreshes the User Table
+
+function eyeAdmin_on_newUser_ok()
+{
+	$newUser = $GLOBALS['newUser_name']->text;
+	$newEmail = $GLOBALS['newUser_email']->text;
+	$passwd = $GLOBALS['newUser_password']->text;
+	$confirm = $GLOBALS['newUser_confirm']->text;
+	
+	if (trim($newUser) == "" || !preg_match("/^[a-zA-Z0-9]+$/", $newUser)) {
+		service('eyex','messageBox',array('content'=>"Sorry, the username can't be empty or contain special characters."));
+	}
+	elseif(strlen($newUser) < 4 || strlen($newUser) > 15){
+		service('eyex','messageBox',array('content'=>"Sorry, the username must have between 4 and 15 characters."));
+	}
+	elseif(glob(EYE_ROOT.'/'.ACCOUNT_DIR.'/*/'.$newUser.'.xml')) {
+		service('eyex','messageBox',array('content'=>"Sorry, the username is already used."));
+	}
+	elseif (trim($passwd) == "" || !preg_match("/^[a-zA-Z0-9]+$/", $passwd)) {
+		service('eyex','messageBox',array('content'=>"Sorry, the password can't be empty or contain special characters."));
+	}
+	elseif (trim($passwd) != trim($confirm)) {
+		service('eyex','messageBox',array('content'=>"Verify password confirmation."));
+	}
+	else {
+
+		if(!service('um','createUser',array('username' => $newUser, 'password' => $passwd, 'email' => $newEmail))) {
+			service('eyex','messageBox',array('content'=>"Error during user creation."));
+		}
+		eyeAdmin_user_refresh($GLOBALS['table_Users'], $GLOBALS['userInfo_label']);
+		
+		$userLenght = strlen($newUser);
+		$userPath = $newUser{0}.$newUser{$userLenght-1}.substr($userLenght,-1);
+	
+		$path = EYE_ROOT.'/'.ACCOUNT_DIR.'/'.$userPath.'/'.$newUser.'.xml';
+		
+		$num=0;
+	
+		for($box=0;	$GLOBALS['newUser_groupchk'.$box.'']==1; $box++) {
+			$name = 'newUser_groupchk'.$box.'';		
+			if($GLOBALS[$name]->checked) {
+				$groupChecked[$num]=$GLOBALS[$name]->text;
+				$num++;
+			}
+		}
+		
+		if(!is_array($groupChecked))
+		{
+			//service('eyex','messageBox',array('content'=>'User without group.'));
+			$groupChecked[0]='';
+		}
+		
+		$userInfo = service('um', 'retriveUser', array($newUser));
+		if(is_array($userInfo))
+		{
+			while($userInfo['eyeUser'][0]['group']) {
+				array_shift($userInfo['eyeUser'][0]['group']);
+			}
+			
+			$userInfo['eyeUser'][0]['group'][0] = strtolower($groupChecked[0]);
+					
+			service('um', 'updateUser', array(
+				'username' => $userInfo['eyeUser'][0]['username'][0],
+				'password' => $userInfo['eyeUser'][0]['password'][0],
+				'email' => $userInfo['eyeUser'][0]['email'][0],
+				'createDate' => $userInfo['eyeUser'][0]['createDate'][0],
+				'group' => $userInfo['eyeUser'][0]['group'][0]
+			));
+			
+			if(array_shift($groupChecked)) {
+				//service('eyex','messageBox',array('content'=>$groupChecked[0]));
+				foreach($groupChecked as $groupname) {
+					array_push($userInfo['eyeUser'][0]['group'],strtolower($groupname));
+				}
+			}
+	
+			$xml = reqLib('eyeXML','array2xml',array($userInfo));
+			$fp = service('vfs','real_open',array($path,'w'));
+		
+			fwrite($fp,$xml);
+			fclose($fp);
+			
+			service('eyex','messageBox',array('content'=>'User successfully created.'));
+		}
+		
+		eyeAdmin_user_refresh($GLOBALS['table_Users'], $GLOBALS['userInfo_label']);
+		$GLOBALS['eyeAdmin_newUser_WND']->close();
+	}
+	eyeAdmin_user_refresh($GLOBALS['table_Users'], $GLOBALS['userInfo_label']);
+}
+
+?>

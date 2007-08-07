@@ -1,0 +1,149 @@
+<?php
+
+function eyeAdmin_on_links_cmdCustomIcon() {
+	global $checknum;
+
+	$links_frmUploadIcon=new Window(array(
+			'name'=>'links_frmUploadIcon',
+			'father'=>'eyeApps',
+			'cent'=>1,
+			'width'=>350,
+			'height'=>170,
+			'type'=>5,
+			'title'=>'Upload icon'
+		));
+	$links_frmUploadIcon->show();
+
+	$links_frmUploadIcon_cmdClose=new Button(array(
+			'name'=>'links_frmUploadIcon_cmdClose',
+			'father'=>'links_frmUploadIcon_Content',
+			'caption'=>'Cancel',
+			'x'=>107,
+			'y'=>106
+		));
+	$links_frmUploadIcon_cmdClose->addFriend($GLOBALS['links_frmUploadIcon']);
+	$links_frmUploadIcon_cmdClose->show();
+
+	$links_frmUploadIcon_frmUpload = new Iframe(array(
+			'name'=>'links_frmUploadIcon_frmUpload',
+			'father'=>'links_frmUploadIcon_Content',
+			'x'=>5,
+			'y'=>5,
+			'height'=>100,
+			'width'=>340,
+			'url'=>'index.php?checknum='.$checknum.'&msg=links_getUp',
+			'scroll'=>0
+		));
+	$links_frmUploadIcon_frmUpload->show();
+
+}
+
+function eyeAdmin_on_links_upLoadFile($params=null) {
+	$filename = $_FILES['myFile']['name'];
+	$filetype = $_FILES['myFile']['type'];
+	$filetmpname=$_FILES['myFile']['tmp_name'];
+	$allowed_types=array('image/jpeg','image/jpg','image/png','image/gif');
+	if (in_array($filetype,$allowed_types)) {
+		if ($filetype=='image/jpeg' || $filetype=='image/jpg') $img=imagecreatefromjpeg($filetmpname);
+		elseif ($filetype=='image/png') $img=imagecreatefrompng($filetmpname);
+		elseif ($filetype=='image/gif')	$img=imagecreatefromgif($filetmpname);
+		$image2=imagecreatetruecolor(60,60);
+		imagecopyresampled($image2,$img,0,0,0,0,60,60,imagesx($img),imagesy($img));
+		$tmp1=explode('.',$filename);
+		$filename='';
+		for ($tmp2=0;$tmp2<(count($tmp1)-1);$tmp2++) $filename.=$tmp1[$tmp2];
+		imagepng($image2,EYE_ROOT.'/'.EXTERN_DIR.'/'.APP_DIR.'/eyeX/themes/default/icons/60x60/'.$filename.'.png',0);
+		imagedestroy($img);
+		imagedestroy($image2);
+		echo '<div class="upLoadText" style="font-family:Verdana;font-size:11px;position:absolute;top:5px;left:100px;">Image uploaded. Restart eyeAdmin and then You can select new icon!</div>';
+	} else {
+		echo '<div class="upLoadText" style="font-family:Verdana;font-size:11px;position:absolute;top:5px;left:100px;">Bad file type. Choose JPG, PNG or GIF file!</div>';
+	}
+	echo '<img src="index.php?extern=apps/eyeFiles/gfx/upload_big.png" style="border:none;position:absolute;top:25px;left:20px;" />';
+}
+
+function eyeAdmin_on_links_frmUploadIcon_cmdClose($params="") {
+	//przydałby się chyba realod ikonek [tylko jak :(]
+	//$GLOBALS['cmbSelectIcon']->addOption($text,$value,$selected=0)
+
+	$GLOBALS['links_frmUploadIcon']->close();
+}
+
+function eyeAdmin_on_links_getUp() {
+	global $checknum;
+	echo '<html>
+	<head>
+	</head>
+</html>	
+<body>
+	<form enctype="multipart/form-data" action="index.php?checknum='.$checknum.'&msg=links_upLoadFile" method="POST">
+		<div class="upLoadText" style="font-family:Verdana;font-size:11px;position:absolute;top:5px;left:100px;">
+			Icon file:
+		</div>
+		<input type="file" name="myFile" style="font-family:Verdana;font-size:11px;position:absolute;top:40px;left:100px;" />
+		<input type="submit" value="Upload" style="font-family:Verdana;font-size:11px;position:absolute;top:80px;left:100px;" />
+		<img src="index.php?extern=apps/eyeFiles/gfx/upload_big.png" style="border:none;position:absolute;top:25px;left:20px;" />
+	</form>
+</body>
+</html>';
+	exit;
+}
+
+function eyeAdmin_on_links_cmdOpen() {
+	service('eyex','messageBox',array('content'=>'Opening a shortcut'));
+	global $checknum;
+	$options = array(
+		0,
+		'links_SelectFileOpen',
+		$checknum
+	);
+	service('proc','launch',array('eyeDialog',$options));
+}
+
+function eyeAdmin_on_links_SelectFileOpen() {
+	$file = $params['arg'][0];
+	if ($file) {
+		service('eyex','messageBox',array('content'=>'Currently not available :('));
+	} else {
+		service('eyex','messageBox',array('content'=>'There is no file'));
+	}
+}
+
+function eyeAdmin_on_links_cmdSave($params=null) {
+	if (!is_dir(EYE_ROOT.'/'.APP_DIR.'/'.$GLOBALS['links_txtAppToRun']->text)) {
+		service('eyex','messageBox',array('content'=>'Application doesn\'t exist'));
+	} else {
+		global $checknum;
+		$options = array(
+			1,
+			'links_SelectFileSave',
+			$checknum
+		);
+		service('proc','launch',array('eyeDialog',$options));
+	}
+}
+
+function eyeAdmin_on_links_SelectFileSave($params=null) {
+	$file = $params['arg'][0];
+	if ($file) {
+		$file.='.eyeAdmin';
+		$file = service('um','getCurrentUserDir').FILES_USER_DIR.'/'.$file;
+		//service('eyex','messageBox',array('content'=>$file,'type'=>2));
+		$fp = fopen($file,'w+');
+		if(!$fp) {
+			service('eyex','messageBox',array('content'=>'Sorry, you do not have sufficient permissions.'));
+			return;
+		}
+		fwrite($fp,"<eyeLink>\n");
+		fwrite($fp,"<content>".$GLOBALS['links_txtAppToRun']->text.".app</content>\n");
+		$icon=$GLOBALS['links_cmbSelectIcon']->selected;
+		fwrite($fp,"<icon>".substr($icon,0,strlen($icon)-4)."</icon>\n");
+		fwrite($fp,'</eyeLink>');
+		fclose($fp);
+		service('eyex','messageBox',array('content'=>'Shortcut saved successfully.'));
+	} else {
+		service('eyex','messageBox',array('content'=>'There is no file'));
+	}
+}
+
+?>

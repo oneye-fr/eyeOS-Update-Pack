@@ -1,0 +1,204 @@
+<?php
+/*
+		eyeAdmin 0.9
+			04.08.2007
+	--------------------------------------------------
+		Made for eyeOS project
+			Webbased Operating System (WebOS)
+				www.eyeos.org | www.eyeos.info
+	--------------------------------------------------
+		Jonas Bueth (de)		bueth			jonas.bueth@eyeos.org
+		Geoffrey Chery (fr)	HarimaKenji	chibi.harima@gmail.com
+		Lars Knickrehm (de)	lars-sh		lars-sh@eye-os.de
+		Ville Perkkio (fi)		vilu
+	--------------------------------------------------
+		Need help? Contact us or the eyeOS community!
+			http://forums.eyeos.org/
+	--------------------------------------------------
+		eyeAdmin is released under the GNU Generla Public License (GPL)
+			provided with each relese in the license.txt
+			or at www.gnu.org/licenses/gpl.txt
+	--------------------------------------------------
+		To help continued development please consider making a donation
+			at www.eyeos.org/donations
+*/
+
+$myCssText = array('font-weight'=>'bold');
+$block1x = 15;
+$text1x = 275;
+$block1y = 40;
+
+$myLabel1 = new Label(array(
+	'name' => 'eyeAdmin_lbl_1',
+	'father' => $adminTab,
+	'text' => 'System Configuration',
+	'x' => $block1x,
+	'y' => 10
+));
+$myLabel1->show();
+$myLabel1->setCss($myCssText);
+
+$myText1 = new Label(array(
+	'name' => 'eyeAdmin_txt_1',
+	'father' => $adminTab,
+	'text' =>'Hostname (The name of your eyeOS system)',
+	'x' => $block1x,
+	'y' => $block1y + 4
+));
+$myText1->show();
+
+$myTextbox1 = new Textbox(array(
+	'name'=>'eyeAdmin_upd_hostname',
+	'father' => $adminTab,
+	'x' => $text1x,
+	'y' => $block1y,
+	'width' => 160,
+	'text' => EYEOS_HOSTNAME,
+	'enabled' => 1
+));
+$myTextbox1->show();
+
+$block1y = $block1y + 25;
+
+$myText4 = new Label(array(
+	'name' => 'eyeAdmin_txt_4',
+	'father' => $adminTab,
+	'text' =>'Default language for all new users since now',
+	'x' => $block1x,
+	'y' => $block1y + 4
+));
+$myText4->show();
+
+$mySelect = new Select(array(
+	'name' => 'eyeAdmin_langSelect',
+	'father' => $adminTab,
+	'x' => $text1x,
+	'y' => $block1y,
+	'width'=>160
+));
+$mySelect->show();
+$mySelect->addOption('English','en');
+
+$dir = EYE_ROOT . '/' . APP_DIR . '/share/i18n/';
+if ($open = opendir($dir)) {
+	while ($file = readdir($open)) {
+		if (substr($file,strlen($file) - 4,strlen($file)) == '.xml') {
+			$myLangXML = eyeXML('getXMLfile',array(EYE_ROOT . '/' . SYSTEM_DIR . '/' . SYSTEM_CONF_DIR . '/skel/conf/i18n/lang.xml'));
+			$LangXML = eyeXML('getXMLfile',array($dir . $file));
+			if (substr($file,0,strlen($file) - 4) == $myLangXML['lang'][0]) $select = 1;
+			else $select = 0;
+				$mySelect->addOption($LangXML['lang'][0]['name'][0],substr($file,0,strlen($file) - 4),$select);
+		}
+	}
+	closedir($open);
+}
+
+$block1y = $block1y + 25;
+
+
+$myText1 = new Label(array(
+	'name' => 'eyeAdmin_txt_5',
+	'father' => $adminTab,
+	'text' =>'Use eyeAdmin for new users "System preferences"',
+	'x' => $block1x,
+	'y' => $block1y + 4
+));
+$myText1->show();
+
+$UseAdminDef = eyeXML('getXMLfile',array(EYE_ROOT . '/' . SYSTEM_DIR . '/' . SYSTEM_CONF_DIR . '/skel/conf/eyeBar/eyeBar.xml'));
+if ($UseAdminDef['eyeBar'][0]['item'][0]['app'][0] == 'eyeAdmin') $UseAdminDef = 1;
+else $UseAdminDef = 0;
+$myCheckbox1 = new Checkbox(array(
+	'name' => 'eyeAdmin_upd_useadmin',
+	'father' => $adminTab,
+	'x' => $text1x - 4,
+	'y' => $block1y,
+	'checked' => $UseAdminDef,
+	'value' => 'true',
+	'text' => ''
+	));
+$myCheckbox1->show();
+
+$block1y = $block1y + 25;
+
+$myText2 = new Label(array(
+	'name' => 'eyeAdmin_txt_2',
+	'father' => $adminTab,
+	'text' =>'Allow every user to register',
+	'x' => $block1x,
+	'y' => $block1y + 4
+));
+$myText2->show();
+
+$myCheckbox2 = new Checkbox(array(
+	'name' => 'eyeAdmin_upd_allowregister',
+	'father' => $adminTab,
+	'x' => $text1x - 4,
+	'y' => $block1y,
+	'checked' => ALLOW_USER_REGISTER,
+	'value' => 'true',
+	'text' => ''
+	));
+$myCheckbox2->show();
+
+$block1y = $block1y + 25;
+
+$myText3 = new Label(array(
+	'name' => 'eyeAdmin_txt_3',
+	'father' => $adminTab,
+	'text' =>'Allow every user to create public folders',
+	'x' => $block1x,
+	'y' => $block1y + 4
+));
+$myText3->show();
+
+$myCheckbox3 = new Checkbox(array(
+	'name' => 'eyeAdmin_upd_allowpublicdirs',
+	'father' => $adminTab,
+	'x' => $text1x - 4,
+	'y' => $block1y,
+	'checked' => ALLOW_PUBLIC_DIRS,
+	'value' => 'true',
+	'text' => ''
+));
+$myCheckbox3->show();
+
+$block1y = $block1y + 25;
+
+$myButton = new Button(array(
+	'name' => 'button_eyeOSupd',
+	'father' => $adminTab,
+	'signal' => 'button_eyeOSupd_click',
+	'caption' => 'Save changes',
+	'x' => $block1x,
+	'y' => $block1y + 20
+));
+$myButton->addFriend($myTextbox1);
+$myButton->addFriend($myCheckbox1);
+$myButton->addFriend($myCheckbox2);
+$myButton->addFriend($myCheckbox3);
+$myButton->addFriend($mySelect);
+$myButton->show();
+
+$block1y = $block1y + 50;
+
+$myButton2 = new Button(array(
+	'name' => 'button_eyeSoft',
+	'father' => $adminTab,
+	'signal' => 'button_eyeSoft_click',
+	'caption' => 'Launch eyeSoft',
+	'x' => $block1x,
+	'y' => $block1y + 20
+));
+$myButton2->show();
+
+$myLogo = new ImageBox(array(
+	'name' => 'eyeAdmin_eyeOSlogo',
+	'father' => $adminTab,
+	'horiz' => 1,
+	'vert' => 1,
+	'alt' => '',
+	'url' => 'index.php?extern=apps/eyeAdmin/icon.png'
+));
+$myLogo->show();
+?>

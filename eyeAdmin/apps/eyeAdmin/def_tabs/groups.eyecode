@@ -1,0 +1,109 @@
+<?php
+/*   
+                                eyeAdmin
+                               Version 0.8
+                                18.07.07
+       -----------------------------------------------------------------                      
+                        Made for eyeOS project
+                     Internet Based Operating System
+                               Version 1.1
+                     www.eyeOS.org - www.eyeOS.info
+       -----------------------------------------------------------------
+                            Jonas Bueth - bueth
+					    Geoffrey Chery - HarimaKenji
+               Need Help? Contact us on eyeOS Forums / IRC or by Mail
+                          http://forums.eyeos.org/
+                           jonas.bueth@eyeos.org
+						   chibi.harima@gmail.com						   
+       -----------------------------------------------------------------
+          eyeAdmin is released under the GNU General Public License - GPL
+               provided with this release in license.txt
+                   or via web at www.gnu.org/licenses/gpl.txt
+
+          To help continued development please consider a donation at
+            http://www.eyeos.org/donations         
+
+*/
+
+	$myInfoLabelGroups = new Label(array(
+		'name'=>'groupsInfo_label',
+		'father'=>$groupsTab,
+		'text'=>'',
+		'y'=>12,'x'=>8
+	));
+	$myInfoLabelGroups->show();
+	
+	$myLabelGroups = new Label(array(
+		'name'=>'groups_label',
+		'father'=>$groupsTab,
+		'text'=>' group(s).',
+		'y'=>12,
+		'x'=> 15+$myInfoLabelGroups->x
+	));
+	$myLabelGroups->show();
+
+
+	$myContainerGroups = new Container(array(
+		'father'=>$groupsTab,
+		'name'=>'tableContainerGroups',
+		'width' =>540,
+		'height'=>280,
+		'x'=>8,'y'=>28
+	));
+	$myContainerGroups->show();
+
+	//Table with Users
+	$sortypesGroups = array("String");
+	$myHeaderGroups = array('Name');
+	
+	$myTableGroups = new Sortabletable(array(
+		'name'=>'table_Groups',
+		'father'=>'tableContainerGroups',
+		'sortypes'=>$sortypesGroups,
+		'theader'=>$myHeaderGroups,
+		'x'=>0,'y'=>0,
+		'width'=>537,'height'=>280,
+		'master'=>0
+	));
+	$myTableGroups->show();
+
+	//NewGroupButton
+	$myNewGroups = new Button(array(
+		'name'=>'button_newGroup',
+		'father'=>$groupsTab,
+		'signal'=>'button_newGroup_click',
+		'caption'=>'New Group',
+		'vert'=>0, 'horiz'=>0,
+		'x'=>8,'y'=>316
+	));
+	$myNewGroups->addFriend($myTableGroups);
+	$myNewGroups->show();
+	
+	//EditGroupButton
+	$myEditGroups = new Button(array(
+		'name'=>'button_editGroup',
+		'father'=>$groupsTab,
+		'signal'=>'button_editGroup_click',
+		'caption'=>'Edit Group',
+		'vert'=>0, 'horiz'=>0,
+		'x'=>93,'y'=>316
+	));
+	$myEditGroups->addFriend($myTableGroups);
+	$myEditGroups->show();
+	
+	//DeleteButton
+	$myButtonGroups = new Button(array(
+		'name'=>'button_deleteGroup',
+		'father'=>$groupsTab,
+		'signal'=>'button_deleteGroup_click',
+		'caption'=>'Delete Group',
+		'vert'=>0, 'horiz'=>0,
+		'x'=>175,'y'=>316
+	));
+	$myButtonGroups->addFriend($myTableGroups);
+	$myButtonGroups->show();
+	
+	
+	eyeAdmin_groups_refresh($myTableGroups, $myInfoLabelGroups);
+
+?>

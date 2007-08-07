@@ -1,0 +1,10 @@
+<package>
+	<name>eyeAdmin</name>
+	<category>Utilities</category>
+	<version>0.9 Alpha 6</version>
+	<description>Control panel for manage and customize your eyeOS, Users and Groups.</description>
+	<author>bueth,HarimaKenji,lars-sh,vilu</author>
+	<license>GPL</license>
+	<type>Application</type>
+	<icon>index.php?extern=apps/eyeAdmin/icon.png</icon>
+</package>

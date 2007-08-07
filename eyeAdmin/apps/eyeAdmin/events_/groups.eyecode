@@ -1,0 +1,396 @@
+<?php
+
+//------ Added by HarimaKenji
+//-- Return an array of assigned users
+
+function assignedUsers($params) {
+	
+	if($params == null || count($params) < 1){
+		reqLib('errorCodes','setErrorCode',array(INCORRECT_PARAMS));
+		return false;
+	}
+	
+	$groupname = $params ;		
+	
+	$usersXML = glob(EYE_ROOT.'/'.ACCOUNT_DIR.'/*/*.xml');
+	
+	$num=0;
+	foreach($usersXML as $userXML) {
+		$data = eyeXML('getXMLfile',array($userXML));
+		
+		for($i=0; $data['eyeUser'][0]['group'][$i]; $i++) {
+			if($data['eyeUser'][0]['group'][$i] == $groupname){
+				$usersTab[$num]=$data['eyeUser'][0]['username'][0];
+				$num++;
+			}
+		}
+	}
+	return $usersTab;
+}
+
+//-- Return the path of user's folders
+
+function userXMLpath($params) {
+
+	if($params == null || count($params) < 1){
+		reqLib('errorCodes','setErrorCode',array(INCORRECT_PARAMS));
+		return false;
+	}
+	
+	$username = $params ;		
+	$userLenght = strlen($username);
+	$userPath = $username{0}.$username{$userLenght-1}.substr($userLenght,-1);
+	
+	$path = EYE_ROOT.'/'.ACCOUNT_DIR.'/'.$userPath.'/'.$username.'.xml';
+
+	return $path;
+}
+//----------------------------------------------------------------
+//*+------------------------------------------------------------+*
+
+/////////////////////
+////Groups EVENTS
+
+//Click Delete Group
+//Opens a new Window, asking really
+function eyeAdmin_on_button_deleteGroup_click()
+{
+	//is a Group selected?
+	$name = $GLOBALS['table_Groups']->selected;
+	$name = strtolower($name);
+	if(empty($name))
+	{
+		service('eyex','messageBox',array('content'=>'Please select a group you want to delete.'));
+		return;
+	}
+	else if($name == "public")
+	{
+		service('eyex','messageBox',array('content'=>'You can not delete the Public group.'));
+		return;
+	}
+	
+	//Show Question Dialog
+	$dialogWindow = new Window(array(
+		'name'=>'eyeAdmin_deleteGroup_WND',
+		'father'=>'eyeAdmin_WND',
+		'removepid'=>0,
+		'type'=>NOLIST_CLOSE_WINDOW,
+		'cent'=>1,
+		'width'=>250,'height'=>140,
+		'title'=>'Delete Group'
+	));
+	$dialogWindow->show();
+	
+	//Hiddenfield stores the name of the Group
+	$hiddenName = new Hidden(array(
+		'name'=>'deleteGroup_hiddenName',
+		'father'=>'eyeAdmin_deleteGroup_WND_Content',
+		'text'=>$name
+	));
+	$hiddenName->show();
+	
+	$dialogLabel1 = new Label(array(
+		'name'=>'deleteGroup_label1',
+		'father'=>'eyeAdmin_deleteGroup_WND_Content',
+		'text'=>"Do you really want to delete the ".$name." group?",
+		'y'=>20,'x'=>15
+	));
+	$dialogLabel1->show();
+	
+	$dialogLabel2 = new Label(array(
+		'name'=>'deleteGroup_label2',
+		'father'=>'eyeAdmin_deleteGroup_WND_Content',
+		'text'=>"(All files in ".$name." will be deleted)",
+		'y'=>35,'x'=>15
+	));
+	$dialogLabel2->show();
+	
+	$dialogButtonYes = new Button(array(
+		'name'=>'deleteGroup_yesButton',
+		'father'=>'eyeAdmin_deleteGroup_WND_Content',
+		'caption'=>'Yes',
+		'x'=>15,'y'=>78,
+		'signal'=>'deleteGroup_yes'
+	));
+	$dialogButtonYes->addFriend($hiddenName);
+	$dialogButtonYes->addFriend($myTableGroups);
+	$dialogButtonYes->show();
+	
+	$dialogButtonNo = new Button(array(
+		'name'=>'deleteGroup_noButton',
+		'father'=>'eyeAdmin_deleteGroup_WND_Content',
+		'caption'=>'No',
+		'x'=>200,'y'=>78,
+		'signal'=>'deleteGroup_no'
+	));
+	$dialogButtonNo->show();
+}
+
+//Clicking No in Delete Group Dialog
+//Closes the Dialog
+function eyeAdmin_on_deleteGroup_no()
+{
+	//print_r($GLOBALS);exit;
+	$GLOBALS['eyeAdmin_deleteGroup_WND']->close();
+}
+
+//Clickin Yes in Delete Group Dialog
+//Deletes the Group stored in deleteGroup_hiddenName
+//Removes the row of the Group in the sortableTable
+//Closes the Dialog
+function eyeAdmin_on_deleteGroup_yes()
+{
+	$name = $GLOBALS['deleteGroup_hiddenName']->text;
+	$dir = EYE_ROOT.'/'.GROUPS_DIR.'/'.$name;
+	if(is_dir($dir))
+	{
+		if(service('vfs', 'real_rmdir', array($dir)))
+		{
+			service('eyex','messageBox',array('content'=>"Group ".$name." deleted."));
+			$GLOBALS['table_Groups']->delRow($name);
+			eyeAdmin_groups_refresh($GLOBALS['table_Groups'], $GLOBALS['groupsInfo_label']);
+			$GLOBALS['eyeAdmin_deleteGroup_WND']->close();
+		}
+		else
+		{
+			service('eyex','messageBox',array('content'=>"Error while deleting group ".$name));
+		}
+	}
+	else
+	{
+		service('eyex','messageBox',array('content'=>"Error: could not find ".$dir));
+	}
+}
+
+
+//Click New Group
+//Opens a new Window, asking the Name of the new group
+function eyeAdmin_on_button_newGroup_click()
+{
+	//Show New Group Dialog
+	$dialogWindow = new Window(array(
+		'name'=>'eyeAdmin_newGroup_WND',
+		'father'=>'eyeAdmin_WND',
+		'removepid'=>0,
+		'type'=>NOLIST_CLOSE_WINDOW,
+		'cent'=>1,
+		'width'=>250,'height'=>140,
+		'title'=>'New Group'
+	));
+	$dialogWindow->show();
+	
+	$dialogLabel = new Label(array(
+		'name'=>'newGroup_label',
+		'father'=>'eyeAdmin_newGroup_WND_Content',
+		'text'=>"Type in the new name of the the group.",
+		'y'=>20,'x'=>15
+	));
+	$dialogLabel->show();
+	
+	$myTextbox = new Textbox(array(
+		'name'=>'newGroup_name',
+		'width'=>216,
+		'father'=>'eyeAdmin_newGroup_WND_Content',
+		'x'=>15,'y'=>40
+	));
+	$myTextbox->show();
+	$myTextbox->addEnterEventMsg('newGroup_ok');
+	$myTextbox->focus();
+	
+	$dialogButtonOK = new Button(array(
+		'name'=>'newGroup_yesButton',
+		'father'=>'eyeAdmin_newGroup_WND_Content',
+		'caption'=>'OK',
+		'x'=>15,'y'=>78,
+		'signal'=>'newGroup_ok'
+	));
+	$dialogButtonOK->addFriend($myTextbox);
+	$dialogButtonOK->addFriend($myTableGroups);
+	$dialogButtonOK->show();
+	
+	$dialogButtonCancel = new Button(array(
+		'name'=>'newGroup_noButton',
+		'father'=>'eyeAdmin_newGroup_WND_Content',
+		'caption'=>'Cancel',
+		'x'=>177,'y'=>78,
+		'signal'=>'newGroup_cancel'
+	));
+	$dialogButtonCancel->show();
+}
+
+//Clicking Cancel in New Group Dialog
+//Closes the Dialog
+function eyeAdmin_on_newGroup_cancel()
+{
+	$GLOBALS['eyeAdmin_newGroup_WND']->close();
+}
+
+//Clickin Yes in New Group Dialog
+//Deletes the Group stored in deleteGroup_hiddenName
+//Removes the row of the Group in the sortableTable
+//Closes the Dialog
+function eyeAdmin_on_newGroup_ok()
+{
+	$name = $GLOBALS['newGroup_name']->text;
+	if(strlen($name) > 2)
+	{
+		$dir = EYE_ROOT.'/'.GROUPS_DIR.'/'.$name;
+		if(is_dir($dir))
+		{
+			service('eyex','messageBox',array('content' => $name." is already existing."));	
+		}
+		else
+		{
+			if(service('vfs', 'mkdir', array($dir)))
+			{	
+				$GLOBALS['table_Groups']->addRow(array($name));
+				service('eyex','messageBox',array('content' => "Group ".$name." successfully created."));
+				
+				//Add root into the new group automaticaly
+				
+				$username=ROOTUSER;
+				$rootdata = service('um', 'retriveUser', array($username));
+				
+				array_push($rootdata['eyeUser'][0]['group'],strtolower($name));
+				
+				$userLenght = strlen($username);
+				$userPath = $username{0}.$username{$userLenght-1}.substr($userLenght,-1);
+	
+				$path = EYE_ROOT.'/'.ACCOUNT_DIR.'/'.$userPath.'/'.$username.'.xml';
+				
+				$xml = reqLib('eyeXML','array2xml',array($rootdata));
+				$fp = service('vfs','real_open',array($path,'w'));
+		
+				fwrite($fp,$xml);
+				fclose($fp);
+				
+				$GLOBALS['eyeAdmin_newGroup_WND']->close();
+			}
+			else
+			{
+				service('eyex','messageBox',array('content' => "Error creating directory ".$dir));	
+			}
+		}
+	}
+	else
+	{
+		service('eyex','messageBox',array('content' => "The name is too short."));	
+	}
+}
+
+
+
+//----- Added by HarimaKenji -------
+
+function eyeAdmin_on_button_editGroup_click()
+{
+	//is a Group selected?
+	$group = $GLOBALS['table_Groups']->selected;
+	$group = strtolower($group);
+	if(empty($group))
+	{
+		service('eyex','messageBox',array('content'=>'Please select a group you want to edit.'));
+		return;
+	}
+	
+	//Show Edit User Dialog
+	$dialogWindow = new Window(array(
+		'name'=>'eyeAdmin_editgroup_WND',
+		'father'=>'eyeAdmin_WND',
+		'removepid'=>0,
+		'type'=>NOLIST_CLOSE_WINDOW,
+		'cent'=>1,
+		'width'=>300,'height'=>300,
+		'title'=>'Edit Group'
+	));
+	$dialogWindow->show();
+
+//Group Textbox Disabled
+	$myLabelGroup = new Label(array(
+		'name'=>'editgroup_groupLBL',
+		'father'=>'eyeAdmin_editgroup_WND_Content',
+		'x'=>15,'y'=>20,
+		'text'=>'Group'
+	));
+	$myLabelGroup->show();
+	
+	$myTextboxGroup = new Textbox(array(
+		'name'=>'editgroup_group',
+		'width'=>185,
+		'father'=>'eyeAdmin_editgroup_WND_Content',
+		'x'=>20,
+		'y'=>18,
+		'horiz'=>1,
+		'text'=>$group,
+		'enabled'=>0
+	));
+	$myTextboxGroup->show();
+
+//User list Label
+	$myUserList = new Label(array(
+		'name'=>'editgroup_userlistLBL',
+		'father'=>'eyeAdmin_editgroup_WND_Content',
+		'x'=>15,
+		'y'=>60,
+		'text'=>'User List'
+	));
+	$myUserList->show();
+
+//OK Button
+	$dialogButtonOK = new Button(array(
+		'name'=>'editgroup_yesButton',
+		'father'=>'eyeAdmin_editgroup_WND_Content',
+		'caption'=>'OK',
+		'horiz'=>0,
+		'vert'=>1,
+		'x'=>15,
+		'y'=>15,
+		'signal'=>'editGroup_ok'
+	));
+
+//Group Checkboxes
+
+	$groupUsers = assignedUsers($group);
+
+	$posX = 20;
+	$posYref = 30+$myUserList->y;
+	$posY = $posYref;
+
+//nbBoxRow is the number of checkboxes for a row.
+	$nbBoxRow = 6;
+	$box=0;
+	
+	//service('eyex','messageBox',array('content' => $groupUsers[0]));
+
+	while($groupUsers[$box])
+	{	
+		$myUser = new Label(array(
+			'name' => "editgroup_user$box",
+			'father' => 'eyeAdmin_editgroup_WND_Content',
+			'text' => ucfirst($groupUsers[$box]),
+			'x' => $posX,
+			'y' => $posY
+		));
+		$myUser->show();
+	
+		if(($box+1)%$nbBoxRow == 0 && $box != 0) {
+			$posX = $posX + 90;
+			$posY = $posYref;			
+		}
+		else{
+			$posY = $posY + 20;
+		}			
+		$box++;
+	}
+
+	$dialogButtonOK->show();
+	
+}
+
+//Clicking OK in New Group Dialog
+//Closes the Dialog
+function eyeAdmin_on_editGroup_ok()
+{
+	$GLOBALS['eyeAdmin_editgroup_WND']->close();
+}
+?>

@@ -1,0 +1,114 @@
+<?php
+/*
+		eyeAdmin 0.9
+			04.08.2007
+	--------------------------------------------------
+		Made for eyeOS project
+			Webbased Operating System (WebOS)
+				www.eyeos.org | www.eyeos.info
+	--------------------------------------------------
+		Jonas Bueth (de)		bueth			jonas.bueth@eyeos.org
+		Geoffrey Chery (fr)	HarimaKenji	chibi.harima@gmail.com
+		Lars Knickrehm (de)	lars-sh		lars-sh@eye-os.de
+		Ville Perkkio (fi)		vilu
+	--------------------------------------------------
+		Need help? Contact us or the eyeOS community!
+			http://forums.eyeos.org/
+	--------------------------------------------------
+		eyeAdmin is released under the GNU Generla Public License (GPL)
+			provided with each relese in the license.txt
+			or at www.gnu.org/licenses/gpl.txt
+	--------------------------------------------------
+		To help continued development please consider making a donation
+			at www.eyeos.org/donations
+*/
+
+/*
+Description: Gets all users
+Arguments: None
+Return: Array of all users
+ - username
+ - group
+ - e-mail
+ - creation date
+Last updated: 04.08.2007
+*/
+function eyeAdmin_getUser() {
+//Get directorys of accounts
+	$myPath = EYE_ROOT.'/'.ACCOUNT_DIR.'/';
+	$myDirs = glob($myPath.'*', GLOB_ONLYDIR);
+	$counter = 0;
+	foreach($myDirs as $dir) {
+//Get xml files in dir
+		$xmlFiles = glob($dir.'/*.xml');
+		if($xmlFiles && count($xmlFiles) > 0) {
+			foreach($xmlFiles as $xmlFile) {
+				$size = service('vfs', 'real_filesize', array($xmlFile));
+				$fp = '';
+				$myContent = '';
+				if ($size > 0) {
+//Read XML file
+					$fp = service('vfs', 'real_open', array($xmlFile, 'r'));
+					$myContent = fread($fp, $size);
+					fclose($fp);
+//Get Array
+					$myFileContent = reqLib('eyeXML', 'xml2array', array($myContent));
+					if(!empty($myFileContent['eyeUser'][0]['username'][0])) {
+						$users[$counter] = array(
+							'username' => $myFileContent['eyeUser'][0]['username'][0],
+							'group' => $myFileContent['eyeUser'][0]['group'],
+							'email' => $myFileContent['eyeUser'][0]['email'][0],
+							'createDate' => $myFileContent['eyeUser'][0]['createDate'][0]
+						);
+						$counter++;
+					}
+				}
+			}
+		}
+	}
+	return $users;
+}
+
+/*
+Description: Refreshes a table and label for users
+Arguments: Table to be refreshed
+ - and label to be refreshed
+Return: Nothing
+Last updated: 04.08.2007
+*/
+function eyeAdmin_user_refresh($table, $label) {
+	if(!empty($table)) {
+		$users = eyeAdmin_getUser();
+		$counter = 0;
+		foreach($users as $user) {
+			$usergroups = '';
+//the Table needs at least a whitespace
+			if(empty($user['email'])) $user['email'] = ' ';
+			if(!is_array($user['group']) || empty($user['group'][0])) $usergroups = ' ';
+			else {
+//Get all Groups with a visible limit of 3
+				for($i=0; $i<=3; $i++) {
+					if($user['group'][$i]) {
+						$group = ucfirst($user['group'][$i]);
+						if($i<3) $usergroups = $usergroups . ', ' . $group;
+						else $usergroups = $usergroups . ',...';
+					}
+				}
+				$usergroups = substr($usergroups, 2);
+			}
+			$table->delRow(ucfirst($user['username']));
+			$table->addRow(array(
+				ucfirst($user['username']),
+				$usergroups,
+				$user['email'],
+				date('d.m.y, g:i a', $user['createDate'])
+			));
+			$counter++;
+		}
+		if(!empty($label)) {
+//Set count of User
+			$label->setText($counter);
+		}
+	}
+}
+?>

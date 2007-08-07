@@ -1,0 +1,61 @@
+<?php
+/*
+		eyeAdmin 0.9
+			04.08.2007
+	--------------------------------------------------
+		Made for eyeOS project
+			Webbased Operating System (WebOS)
+				www.eyeos.org | www.eyeos.info
+	--------------------------------------------------
+		Jonas Bueth (de)		bueth			jonas.bueth@eyeos.org
+		Geoffrey Chery (fr)	HarimaKenji	chibi.harima@gmail.com
+		Lars Knickrehm (de)	lars-sh		lars-sh@eye-os.de
+		Ville Perkkio (fi)		vilu
+	--------------------------------------------------
+		Need help? Contact us or the eyeOS community!
+			http://forums.eyeos.org/
+	--------------------------------------------------
+		eyeAdmin is released under the GNU Generla Public License (GPL)
+			provided with each relese in the license.txt
+			or at www.gnu.org/licenses/gpl.txt
+	--------------------------------------------------
+		To help continued development please consider making a donation
+			at www.eyeos.org/donations
+*/
+
+function eyeAdmin_on_button_eyeOSupd_click() {
+// Save the changes
+	$xmlFile = EYE_ROOT . '/' . SYSTEM_DIR . '/' . SYSTEM_CONF_DIR . '/system.xml';
+	$myFileContent = reqLib('eyeXML','getXMLFile',array($xmlFile));
+	$myFileContent['CONFIG'][0]['EYEOS_HOSTNAME'][0] = $GLOBALS['eyeAdmin_upd_hostname']->text;
+	$myFileContent['CONFIG'][0]['ALLOW_USER_REGISTER'][0] = $GLOBALS['eyeAdmin_upd_allowregister']->checked;
+	$myFileContent['CONFIG'][0]['ALLOW_PUBLIC_DIRS'][0] = $GLOBALS['eyeAdmin_upd_allowpublicdirs']->checked;
+	reqLib('eyeXML', 'setXMLFile', array($xmlFile, $myFileContent));
+// Update the default language
+	$xmlFile = EYE_ROOT . '/' . SYSTEM_DIR . '/' . SYSTEM_CONF_DIR . '/skel/conf/i18n/lang.xml';
+	$myFileContent = reqLib('eyeXML','getXMLFile',array($xmlFile));
+	$myFileContent['lang'][0] = $GLOBALS['eyeAdmin_langSelect']->selected;
+	reqLib('eyeXML', 'setXMLFile', array($xmlFile, $myFileContent));
+// Update the default "System preferences" app
+	$xmlFile = EYE_ROOT . '/' . SYSTEM_DIR . '/' . SYSTEM_CONF_DIR . '/skel/conf/eyeBar/eyeBar.xml';
+	$myFileContent = reqLib('eyeXML','getXMLFile',array($xmlFile));
+	if ($GLOBALS['eyeAdmin_upd_useadmin']->checked = 1) $AppToUse = 'eyeAdmin';
+	elseif ($myFileContent['eyeBar'][0]['item'][0]['app'][0] == 'eyeAdmin') $AppToUse = 'eyeControl';
+	else $AppToUse = $myFileContent['eyeBar'][0]['item'][0]['app'][0];
+	$myFileContent['eyeBar'][0]['item'][0]['app'][0] = $AppToUse;
+	reqLib('eyeXML', 'setXMLFile', array($xmlFile, $myFileContent));
+	service('eyex','messageBox',array('content'=>'System Configuration successfully updated.'));
+}
+
+function eyeAdmin_on_button_eyeSoft_click() {
+	service('proc','launch',array('eyeSoft'));
+}
+
+//This function should be on about-tabs events codes but we can move it later if needed.
+function eyeAdmin_on_button_checkUpdates_click() {
+	$eyeAdminVersion = $GLOBALS['hiddenVersion']->text;
+	//service('lib','getRawFile',array('url'=>'http://baanaweb.fi/derek/eyeadminver.php?ver=$eyeAdminVersion'));
+	//service('proc','launch',array('eyeNav','http://www.eyeOS.org'));
+	service('eyex','messageBox',array('content'=>'Function is not ready yet.'));
+}
+?>

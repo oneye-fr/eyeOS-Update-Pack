@@ -1,0 +1,112 @@
+<?php
+/*
+		eyeAdmin 0.9
+			04.08.2007
+	--------------------------------------------------
+		Made for eyeOS project
+			Webbased Operating System (WebOS)
+				www.eyeos.org | www.eyeos.info
+	--------------------------------------------------
+		Jonas Bueth (de)		bueth			jonas.bueth@eyeos.org
+		Geoffrey Chery (fr)	HarimaKenji	chibi.harima@gmail.com
+		Lars Knickrehm (de)	lars-sh		lars-sh@eye-os.de
+		Ville Perkkio (fi)		vilu
+	--------------------------------------------------
+		Need help? Contact us or the eyeOS community!
+			http://forums.eyeos.org/
+	--------------------------------------------------
+		eyeAdmin is released under the GNU Generla Public License (GPL)
+			provided with each relese in the license.txt
+			or at www.gnu.org/licenses/gpl.txt
+	--------------------------------------------------
+		To help continued development please consider making a donation
+			at www.eyeos.org/donations
+*/
+function eyeAdmin_run($params = null) {
+// Include libraries
+	$dir = EYE_ROOT.'/'.APP_DIR.'/eyeAdmin/libs/';
+	if ($open = opendir($dir)) {
+		while ($file = readdir($open)) {
+			if (substr($file,strlen($file) - strlen(EYE_CODE_EXTENSION),strlen($file)) == EYE_CODE_EXTENSION) {
+				include_once($dir . $file);
+			}
+		}
+		closedir($open);
+	}
+
+// Main window
+	$myWindow = new Window(array(
+		'name' => 'eyeAdmin_WND',
+		'father' => 'eyeApps',
+		'cent' => 1,
+		'width' => 610,
+		'height' => 430,
+		'title' => 'eyeAdmin',
+		'type'=>NORESIZE_WINDOW
+	));
+	$myWindow->show();
+
+//Tabcontrol in main window
+	$myTab = new Tab(array(
+		'name'=>'eyeAdmin_Tab',
+		'father'=>'eyeAdmin_WND_Content',
+		'width'=>600, 'height'=>400,
+		'x'=>5,'y'=>5,
+		'caption'=>'eyeAdmin',
+		'signal'=>'tabClosed'
+	));
+	$myTab->show();
+
+// Show tabs
+global $currentUser;
+// General
+	$generalTab = $myTab->addTab('General', 1);
+	include_once(EYE_ROOT . '/' . APP_DIR . '/eyeAdmin/def_tabs/general' . EYE_CODE_EXTENSION);
+
+// Admin
+if($currentUser == ROOTUSER) {
+	$adminTab = $myTab->addTab('Admin', 1);
+	include_once(EYE_ROOT . '/' . APP_DIR . '/eyeAdmin/def_tabs/admin' . EYE_CODE_EXTENSION);
+}
+// Users
+if($currentUser == ROOTUSER) {
+	$userTab = $myTab->addTab('Users', 1);
+	include_once(EYE_ROOT . '/' . APP_DIR . '/eyeAdmin/def_tabs/users' . EYE_CODE_EXTENSION);
+}
+// Groups
+if($currentUser == ROOTUSER) {
+	$groupsTab = $myTab->addTab('Groups', 1);
+	include_once(EYE_ROOT . '/' . APP_DIR . '/eyeAdmin/def_tabs/groups' . EYE_CODE_EXTENSION);
+}
+// Include tabs from tabs/ dir
+	global $eyeAdminTabs;
+	$dir = EYE_ROOT.'/'.APP_DIR.'/eyeAdmin/tabs/';
+	if ($open = opendir($dir)) {
+		while ($file = readdir($open)) {
+			if (substr($file,strlen($file) - 4,strlen($file)) == '.xml') {
+				$eyeAdminTab = eyeXML('getXMLfile',array($dir . $file));
+				if ($eyeAdminTab['tab'][0]['permissions'][0] == 'root' && $currentUser == ROOTUSER || $eyeAdminTab['tab'][0]['permissions'][0] == 'users' && $currentUser != ROOTUSER || $eyeAdminTab['tab'][0]['permissions'][0] == 'all') {
+					$eyeAdminTabs[substr($file,0,strlen($file) - 4)] = $myTab->addTab($eyeAdminTab['tab'][0]['name'][0], 1);
+					include_once($dir . substr($file,0,strlen($file) - 4) . EYE_CODE_EXTENSION);
+				}
+			}
+		}
+		closedir($open);
+	}
+
+// About
+	$aboutTab = $myTab->addTab('About', 1);
+	include_once(EYE_ROOT . '/' . APP_DIR . '/eyeAdmin/def_tabs/about' . EYE_CODE_EXTENSION);
+
+//Select tab
+	if($params[0]) {
+		$myTab->selectByName($params[0]);
+	} else {
+		$myTab->selectByName('General');
+	}
+}
+
+function eyeAdmin_end($params = null) {
+	reqLib('eyeWidgets','unserialize');
+}
+?>
